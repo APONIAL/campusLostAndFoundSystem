@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: LostAndFoundBackend
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bs_campus_lost_fund?serverTimezone=GMT%2b8
+    username: root
+    password: dtt
+    type: com.zaxxer.hikari.HikariDataSource
+#    用于防止swagger启动失败
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+server:
+  port: 9090
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
