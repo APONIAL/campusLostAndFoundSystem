@@ -77,20 +77,35 @@
           border-radius: 5px;margin-bottom: 10px">
             欢迎使用校园失物招领系统
           </div>
-          <el-card style="width: 500px">
-            <div slot="header" class="clearfix"><span>系统公告</span></div>
-            <div>
-              2025毕设
-              <div style="margin-top: 20px">
-                <div style="margin: 10px 0"><strong>主题色</strong></div>
-                <el-button type="primary">按钮</el-button>
-                <el-button type="success">按钮</el-button>
-                <el-button type="warning">按钮</el-button>0
-                <el-button type="danger">按钮</el-button>
-                <el-button type="info">按钮</el-button>
+          <div style="display: flex">
+            <el-card style="width: 50%">
+              <div slot="header" class="clearfix"><span>系统公告</span></div>
+              <div>
+                2025毕设
+                <div style="margin-top: 20px">
+                  <div style="margin: 10px 0"><strong>主题色</strong></div>
+                  <el-button type="primary">按钮</el-button>
+                  <el-button type="success">按钮</el-button>
+                  <el-button type="warning">按钮</el-button>
+                  <el-button type="danger">按钮</el-button>
+                  <el-button type="info">按钮</el-button>
+                </div>
               </div>
-            </div>
-          </el-card>
+            </el-card>
+            <el-card style="width: 50%;margin-left: 10px">
+              <div slot="header" class="clearfix">
+                <span>渲染用户数据</span>
+              </div>
+              <div>
+                <el-table :data="users" stripe style="width: 100%">
+                  <el-table-column label="ID"prop="id" ></el-table-column>
+                  <el-table-column label="用户名"prop="username" ></el-table-column>
+                  <el-table-column label="姓名"prop="name" ></el-table-column>
+                  <el-table-column label="邮箱"prop="email" ></el-table-column>
+                </el-table>
+              </div>
+            </el-card>
+          </div>
         </el-main>
 
       </el-container>
@@ -106,7 +121,8 @@ export default {
     return {
       isCollapse: false, //不收缩
       asideWidth: '200px',
-      collapseIcon: 'el-icon-s-fold'
+      collapseIcon: 'el-icon-s-fold',
+      users: []
     }
   },
   methods: {
@@ -123,6 +139,13 @@ export default {
         document.documentElement.requestFullscreen()
       }
     }
+  },
+  mounted () {
+    this.$request.get('/user').then(res => {
+      if (res != null){
+        this.users = res.data
+      }
+    })
   }
 }
 </script>

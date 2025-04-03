@@ -3,6 +3,8 @@ package com.example.lostandfoundbackend.service;
 import com.example.lostandfoundbackend.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IUserService extends IService<User> {
 
+    Object findByIdAndName(Integer id, String username);
+
+    List<User> findObsByName(String name);
 }

@@ -2,7 +2,9 @@ package com.example.lostandfoundbackend.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.lostandfoundbackend.common.Constants;
 import io.swagger.annotations.Api;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,10 +32,22 @@ public class UserController {
     @Resource
     private IUserService userService;
 
-    // 新增或者更新
+    /**
+     *  新增或者更新
+     * @param user
+     * @return
+     */
     @PostMapping("/saveOrUpdate")
     public Result save(@RequestBody User user) {
-        userService.saveOrUpdate(user);
+       try {
+           userService.saveOrUpdate(user);
+       }catch (Exception e){
+           if (e instanceof DuplicateKeyException){
+               return Result.error(Constants.CODE_416,"插入数据库错误");
+           }else {
+               return Result.error(Constants.CODE_500,"系统错误");
+           }
+       }
         return Result.success();
     }
 
@@ -67,5 +81,25 @@ public class UserController {
         return Result.success(userService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
+    /**
+     * 根据id 和 username 查询
+     * @param id
+     * @param username
+     * @return
+     */
+    @GetMapping("/selectByMore")
+    public Result findByIdAndName(@RequestParam Integer id,@RequestParam String username){
+        return Result.success(userService.findByIdAndName(id,username));
+    }
+
+    /**
+     * 根据name模糊查询
+     * @param name
+     * @return
+     */
+    @GetMapping("/selectObsByName")
+    public Result findObsByName(@RequestParam String name){
+        return Result.success(userService.findObsByName(name));
+    }
 }
 
