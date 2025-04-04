@@ -16,6 +16,8 @@ public interface Constants {
     String CODE_500 = "500";
     //数据库操作错误
     String CODE_416 = "416";
-    //其他业务错误
+    /**
+     * service 层错误码
+     */
     String CODE_600 = "600";
 }

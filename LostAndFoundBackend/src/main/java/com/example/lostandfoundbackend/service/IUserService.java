@@ -18,4 +18,8 @@ public interface IUserService extends IService<User> {
     Object findByIdAndName(Integer id, String username);
 
     List<User> findObsByName(String name);
+
+    User login(User user);
+
+    Boolean register(User user);
 }

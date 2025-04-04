@@ -14,6 +14,16 @@ const routes = [
     path: '/element',
     name: 'Element',
     component: ElementView
+  },
+  {
+    path:'/login',
+    name:'Login',
+    component:()=>import('../views/Login')
+  },
+  {
+    path:'/register',
+    name:'Register',
+    component:()=>import('../views/Register')
   }
 
 ]
