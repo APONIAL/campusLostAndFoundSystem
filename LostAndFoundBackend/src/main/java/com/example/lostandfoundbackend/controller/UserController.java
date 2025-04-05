@@ -3,8 +3,10 @@ package com.example.lostandfoundbackend.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.lostandfoundbackend.common.AuthAccess;
 import com.example.lostandfoundbackend.common.Constants;
 import com.example.lostandfoundbackend.exception.ServiceException;
+import com.example.lostandfoundbackend.utils.TokenUtils;
 import io.swagger.annotations.Api;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +45,7 @@ public class UserController {
      * @param user
      * @return
      */
+    @AuthAccess
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
         if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPassword())) {
@@ -56,6 +59,9 @@ public class UserController {
             //抛出一个自定义异常
             throw new ServiceException("账号或者密码错误");
         }
+        //生成token
+        String token = TokenUtils.createToken(dbUser.getId().toString(), user.getPassword());
+        dbUser.setToken(token);
         return Result.success(dbUser);
     }
 

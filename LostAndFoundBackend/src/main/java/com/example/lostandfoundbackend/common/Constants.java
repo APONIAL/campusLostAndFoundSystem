@@ -8,8 +8,10 @@ package com.example.lostandfoundbackend.common;
 public interface Constants {
     //成功
     String CODE_200 = "200";
-    //权限不足
-    String CODE_401 = "401";
+    /**
+     * 权限错误
+     */
+    String CODE_401 = "0";
     //参数错误
     String CODE_400 = "400";
     //系统出错

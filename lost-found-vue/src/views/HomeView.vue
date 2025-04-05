@@ -65,7 +65,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>个人信息</el-dropdown-item>
                 <el-dropdown-item>修改密码</el-dropdown-item>
-                <el-dropdown-item @click="handleLogoOut">退出登录</el-dropdown-item>
+                <el-dropdown-item @click.native="handleLogoOut">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -98,10 +98,10 @@
               </div>
               <div>
                 <el-table :data="users" stripe style="width: 100%">
-                  <el-table-column label="ID"prop="id" ></el-table-column>
-                  <el-table-column label="用户名"prop="username" ></el-table-column>
-                  <el-table-column label="姓名"prop="name" ></el-table-column>
-                  <el-table-column label="邮箱"prop="email" ></el-table-column>
+                  <el-table-column label="ID" prop="id"></el-table-column>
+                  <el-table-column label="用户名" prop="username"></el-table-column>
+                  <el-table-column label="姓名" prop="name"></el-table-column>
+                  <el-table-column label="邮箱" prop="email"></el-table-column>
                 </el-table>
               </div>
             </el-card>
@@ -138,11 +138,15 @@ export default {
       } else {
         document.documentElement.requestFullscreen()
       }
+    },
+    handleLogoOut () {
+      localStorage.removeItem('user')
+      this.$router.push('/login')
     }
   },
   mounted () {
     this.$request.get('/user').then(res => {
-      if (res != null){
+      if (res != null) {
         this.users = res.data
       }
     })

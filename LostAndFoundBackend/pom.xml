@@ -30,6 +30,14 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
+
+        <!--JWT依赖-->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>

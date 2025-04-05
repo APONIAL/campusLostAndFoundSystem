@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from '@/router'
 //按需导入element-ui
 import {
   Message,
@@ -15,6 +16,10 @@ const request = axios.create({
 //比如统一的token，对请求参数统一加密
 request.interceptors.request.use(config => {
   config.headers['Content-Type'] = 'application/json;charset=UTF-8'
+  //拿到token
+  let user = JSON.parse(localStorage.getItem('user') || '{}')
+  //设置请求头
+  config.headers['token'] = user.token
   return config
 }, error => {
   //for debug
@@ -27,23 +32,22 @@ request.interceptors.request.use(config => {
 //比如统一处理错误，对返回的数据进行统一处理
 request.interceptors.response.use(response => {
   let res = response.data
-
   // 兼容服务器端返回的字符串数据
   if (typeof res === 'string') {
     res = res ? JSON.parse(res) : res
   }
-  if (res.code === "200") {
+  if (res.code === '200') {
     return res
-  }else if (res.code === "401") {
-    MessageBox.confirm('权限不足，请重新登录','提示',{
-      confirmButtonText:'确定',
-      cancelButtonText:'取消',
-      type:'warning'
+  } else if (res.code === '401') {
+    MessageBox.confirm(res.msg, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
     }).then(() => {
       window.sessionStorage.clear()
-      window.location.href = '/'
-    }).catch(res=>res)
-  }else {
+      router.push('/login')
+    }).catch(res => res)
+  } else {
     Message({
       message: res.msg,
       type: 'error',
