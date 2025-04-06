@@ -1,9 +1,10 @@
+ip: localhost
 spring:
   application:
     name: LostAndFoundBackend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/bs_campus_lost_fund?serverTimezone=GMT%2b8
+    url: jdbc:mysql://${ip}:3306/bs_campus_lost_fund?serverTimezone=GMT%2b8
     username: root
     password: dtt
     type: com.zaxxer.hikari.HikariDataSource
@@ -11,8 +12,13 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 server:
   port: 9090
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

@@ -78,7 +78,7 @@
             欢迎使用校园失物招领系统
           </div>
           <div style="display: flex">
-            <el-card style="width: 50%">
+            <el-card style="width: 30%">
               <div slot="header" class="clearfix"><span>系统公告</span></div>
               <div>
                 2025毕设
@@ -92,7 +92,7 @@
                 </div>
               </div>
             </el-card>
-            <el-card style="width: 50%;margin-left: 10px">
+            <el-card style="width: 70%;margin-left: 10px">
               <div slot="header" class="clearfix">
                 <span>渲染用户数据</span>
               </div>
@@ -102,10 +102,64 @@
                   <el-table-column label="用户名" prop="username"></el-table-column>
                   <el-table-column label="姓名" prop="name"></el-table-column>
                   <el-table-column label="邮箱" prop="email"></el-table-column>
+                  <el-table-column label="文件上传">
+                    <template v-slot="scope">
+                      <el-upload
+                        class="upload-demo"
+                        action="http://localhost:9090/file/upload"
+                        :headers="{token:loginUser.token}"
+                        :show-file-list="false"
+                        :on-success="(row,res,file,fileList)=>handleTableUpload(scope.row,res,file,fileList)"
+                      >
+                        <el-button size="mini" type="primary">点击上传</el-button>
+                      </el-upload>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="头像预览">
+                    <template v-slot="scope">
+                      <el-image v-if="scope.row.avatar" :src="scope.row.avatar" style="width: 50px;height: 50px"></el-image>
+                      <div>
+                        <el-button size="mini" @click="preview(scope.row.avatar)">预览</el-button>
+                      </div>
+                    </template>
+                  </el-table-column>
                 </el-table>
               </div>
             </el-card>
           </div>
+
+          <!--  上传下载功能-->
+          <div style="display: flex;margin: 10px 0">
+            <el-card style="width: 50%;margin-right: 10px">
+              <div slot="header" class="clearfix">
+                <span>文件上传功能</span>
+              </div>
+              <div>
+                <el-upload
+                  class="upload-demo"
+                  action="http://localhost:9090/file/upload"
+                  :headers="{token:loginUser.token}"
+                  :file-list="fileList"
+                  :on-success="handleUploadSuccess"
+                  list-type="picture"
+                >
+                  <el-button size="small" type="primary">单文件上传</el-button>
+                </el-upload>
+              </div>
+              <div >
+                <el-upload
+                  action="http://localhost:9090/file/upload"
+                  :headers="{token:loginUser.token}"
+                  :on-success="handleMultipleFileUploadSuccess"
+                  multiple
+                >
+                  <el-button style="margin: 10px 0" size="small" type="success">多文件上传</el-button>
+                </el-upload>
+                <el-button style="margin: 10px 0" type="success" @click="showUrls">显示上传的链接</el-button>
+              </div>
+            </el-card>
+          </div>
+
         </el-main>
 
       </el-container>
@@ -122,10 +176,47 @@ export default {
       isCollapse: false, //不收缩
       asideWidth: '200px',
       collapseIcon: 'el-icon-s-fold',
-      users: []
+      fileList:[],
+      users: [],
+      loginUser: JSON.parse(localStorage.getItem('user') || '{}'),
+      url:'',
+      urls:[]
     }
   },
   methods: {
+
+    //预览图片
+    preview(url){
+      //默认图片是预览的
+      window.open(url)
+    },
+
+    showUrls(){
+      console.log(this.urls)
+    },
+
+    //多文件上传成功的callbackFn
+    handleMultipleFileUploadSuccess(res, file, fileList){
+       this.urls = fileList.map(v=>v.response?.data)
+    },
+
+    //要拿到当前表格行对象
+    handleTableUpload(row,res, file, fileList){
+      //将图片地址赋值给当前行对象
+      row.avatar = res.response.data
+      //触发更新
+      this.$request.post('/user/saveOrUpdate',row).then(res=>{
+        if (res.code === '200'){
+          this.$message.success('头像上传成功')
+        }else {
+          this.$message.error(res.data.msg)
+        }
+      })
+    },
+    //:on-success="handleUploadSuccess" 上传成功后的钩子
+    handleUploadSuccess (response, file, fileList) {
+      this.fileList = fileList
+    },
     handleCollapse () {
       this.isCollapse = !this.isCollapse
       this.asideWidth = this.isCollapse ? '64px' : '200px'
