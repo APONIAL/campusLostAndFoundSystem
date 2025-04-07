@@ -15,33 +15,17 @@
                  text-color="rgba(255,255,255,0.65)" active-text-color="#fff"
                  style="border: none" :default-active="$route.path">
           <!--一级菜单-->
-          <el-menu-item index="/">
+          <el-menu-item index="/home">
             <!--i里面放着图标-->
-            <i class="el-icon-house"></i>
+            <i class="el-icon-s-home"></i>
             <span slot="title">系统首页</span>
-          </el-menu-item>
-          <el-menu-item index="/1">
-            <!--i里面放着图标-->
-            <i class="el-icon-house"></i>
-            <span slot="title">系统首页</span>
-          </el-menu-item>
-          <el-menu-item index="/2">
-            <!--i里面放着图标-->
-            <i class="el-icon-house"></i>
-            <span slot="title">系统首页</span>
-          </el-menu-item>
-          <el-menu-item index="element">
-            <i class="el-icon-house"></i>
-            <span slot="title">Element页面</span>
           </el-menu-item>
           <!--二级菜单-->
-          <el-submenu>
-            <template slot="title">
+          <el-submenu index="info">
+            <template slot="title" >
               <i class="el-icon-menu"></i><span>系统管理</span>
             </template>
-            <el-menu-item>用户信息</el-menu-item>
-            <el-menu-item>管理员信息</el-menu-item>
-            <el-menu-item index="/">系统首页</el-menu-item>
+            <el-menu-item index="/user">用户信息</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -59,7 +43,7 @@
             <el-dropdown placement="bottom">
               <div style="display: flex;align-items: center;cursor: default">
                 <img src="@/assets/logo.png" style="width: 40px;height: 40px">
-                <span>管理员</span>
+                <span>{{loginUser.name}}</span>
               </div>
               <!--头像下拉框-->
               <el-dropdown-menu slot="dropdown">
@@ -73,93 +57,7 @@
 
         <!--  主体区域-->
         <el-main>
-          <div style="box-shadow: 0 0 10px rgba(0,0,0,.1);padding: 10px 20px;
-          border-radius: 5px;margin-bottom: 10px">
-            欢迎使用校园失物招领系统
-          </div>
-          <div style="display: flex">
-            <el-card style="width: 30%">
-              <div slot="header" class="clearfix"><span>系统公告</span></div>
-              <div>
-                2025毕设
-                <div style="margin-top: 20px">
-                  <div style="margin: 10px 0"><strong>主题色</strong></div>
-                  <el-button type="primary">按钮</el-button>
-                  <el-button type="success">按钮</el-button>
-                  <el-button type="warning">按钮</el-button>
-                  <el-button type="danger">按钮</el-button>
-                  <el-button type="info">按钮</el-button>
-                </div>
-              </div>
-            </el-card>
-            <el-card style="width: 70%;margin-left: 10px">
-              <div slot="header" class="clearfix">
-                <span>渲染用户数据</span>
-              </div>
-              <div>
-                <el-table :data="users" stripe style="width: 100%">
-                  <el-table-column label="ID" prop="id"></el-table-column>
-                  <el-table-column label="用户名" prop="username"></el-table-column>
-                  <el-table-column label="姓名" prop="name"></el-table-column>
-                  <el-table-column label="邮箱" prop="email"></el-table-column>
-                  <el-table-column label="文件上传">
-                    <template v-slot="scope">
-                      <el-upload
-                        class="upload-demo"
-                        action="http://localhost:9090/file/upload"
-                        :headers="{token:loginUser.token}"
-                        :show-file-list="false"
-                        :on-success="(row,res,file,fileList)=>handleTableUpload(scope.row,res,file,fileList)"
-                      >
-                        <el-button size="mini" type="primary">点击上传</el-button>
-                      </el-upload>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="头像预览">
-                    <template v-slot="scope">
-                      <el-image v-if="scope.row.avatar" :src="scope.row.avatar" style="width: 50px;height: 50px"></el-image>
-                      <div>
-                        <el-button size="mini" @click="preview(scope.row.avatar)">预览</el-button>
-                      </div>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
-            </el-card>
-          </div>
-
-          <!--  上传下载功能-->
-          <div style="display: flex;margin: 10px 0">
-            <el-card style="width: 50%;margin-right: 10px">
-              <div slot="header" class="clearfix">
-                <span>文件上传功能</span>
-              </div>
-              <div>
-                <el-upload
-                  class="upload-demo"
-                  action="http://localhost:9090/file/upload"
-                  :headers="{token:loginUser.token}"
-                  :file-list="fileList"
-                  :on-success="handleUploadSuccess"
-                  list-type="picture"
-                >
-                  <el-button size="small" type="primary">单文件上传</el-button>
-                </el-upload>
-              </div>
-              <div >
-                <el-upload
-                  action="http://localhost:9090/file/upload"
-                  :headers="{token:loginUser.token}"
-                  :on-success="handleMultipleFileUploadSuccess"
-                  multiple
-                >
-                  <el-button style="margin: 10px 0" size="small" type="success">多文件上传</el-button>
-                </el-upload>
-                <el-button style="margin: 10px 0" type="success" @click="showUrls">显示上传的链接</el-button>
-              </div>
-            </el-card>
-          </div>
-
+          <router-view/>
         </el-main>
 
       </el-container>
@@ -168,9 +66,9 @@
   </div>
 </template>
 
-<script>
+<script>5
 export default {
-  name: 'HomeView',
+  name: 'Manager',
   data () {
     return {
       isCollapse: false, //不收缩
@@ -197,7 +95,7 @@ export default {
 
     //多文件上传成功的callbackFn
     handleMultipleFileUploadSuccess(res, file, fileList){
-       this.urls = fileList.map(v=>v.response?.data)
+      this.urls = fileList.map(v=>v.response?.data)
     },
 
     //要拿到当前表格行对象
