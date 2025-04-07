@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.lostandfoundbackend.common.AuthAccess;
 import com.example.lostandfoundbackend.common.Constants;
+import com.example.lostandfoundbackend.dto.UserDto;
 import com.example.lostandfoundbackend.exception.ServiceException;
 import com.example.lostandfoundbackend.utils.TokenUtils;
 import io.swagger.annotations.Api;
@@ -81,6 +82,20 @@ public class UserController {
         return Result.success();
     }
 
+    /**
+     * 重置密码接口
+     * @param userDto
+     * @return
+     */
+    @AuthAccess
+    @PostMapping("/forgetPassword")
+    public Result forgetPassword(@RequestBody UserDto userDto){
+        if (StrUtil.isBlank(userDto.getUsername()) || StrUtil.isBlank(userDto.getPhone())) {
+            return Result.error(Constants.CODE_400, "数据输入不合法");
+        }
+        userService.resetPassword(userDto);
+        return Result.success();
+    }
 
     /**
      * 新增或者更新

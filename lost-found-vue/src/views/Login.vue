@@ -36,11 +36,27 @@
           <div style="display:flex;">
             <div style="flex: 1">还没有账号？请 <span style="color: #409EFF;
             cursor: pointer" @click="$router.push('/register')">注册</span></div>
-            <div style="flex: 1;text-align: right"><span style="color: #409EFF;cursor: pointer">忘记密码</span></div>
+            <div style="flex: 1;text-align: right"><span style="color: #409EFF;cursor: pointer"
+                                                         @click="handleForgetPass">忘记密码</span></div>
           </div>
         </el-form>
       </div>
     </div>
+    <!--忘记密码 对话框-->
+    <el-dialog title="忘记密码" :visible.sync="forgetPassDialogVis" width="30%">
+      <el-form :model="forgetUserForm" label-width="80px" style="padding-right: 20px">
+        <el-form-item label="账号">
+          <el-input v-model="forgetUserForm.username" autocomplete="off" placeholder="请输入账号"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="forgetUserForm.phone" autocomplete="off" placeholder="请输入手机号"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="forgetPassDialogVis = false">取 消</el-button>
+        <el-button type="primary" @click="resetPassword">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -54,6 +70,8 @@ export default {
   },
   data () {
     return {
+      forgetUserForm: {}, //忘记密码表单数据
+      forgetPassDialogVis: false,
       code: '', // 验证码组件传递过来的code
       user: {
         checkCode: '',
@@ -92,6 +110,25 @@ export default {
     }
   },
   methods: {
+    //初始化表单
+    handleForgetPass () {
+      this.forgetUserForm = {}
+      this.forgetPassDialogVis = true
+    },
+    //重置密码
+    resetPassword () {
+      this.$request.post('/user/forgetPassword', this.forgetUserForm).then(res => {
+        if (res.code ==='200'){
+          this.$message.success('重置密码成功，初试密码为123456')
+          this.forgetUserForm = {}
+          this.forgetPassDialogVis = false
+        }else{
+          this.$message.error(res.data.msg)
+        }
+      }).catch(res=> {
+        this.handleForgetPass();
+      })
+    },
     getCode (code) {
       this.code = code.toLowerCase()
     },
@@ -104,17 +141,17 @@ export default {
             this.$request.post('/user/login', this.user).then(res => {
               if (res.code === '200') {
                 this.$router.push('/')
-                this.$message.success("登录成功")
+                this.$message.success('登录成功')
                 //存儲用户信息
                 localStorage.setItem('user', JSON.stringify(res.data))
               } else {
                 this.$message.error(res.data.msg)
               }
-            }).catch(res=>res)
-          } else if(!this.user.checkCode){
+            }).catch(res => res)
+          } else if (!this.user.checkCode) {
             //验证码为空
             this.$message.error('请输入验证码')
-         }else{
+          } else {
             this.$message.error('验证码错误')
           }
         }

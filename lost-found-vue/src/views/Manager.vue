@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-container>
-
       <!--侧边栏-->
       <el-aside :width="asideWidth" style="min-height: 100vh;background-color: #001529">
         <!--侧边栏logo-->
@@ -35,20 +34,20 @@
         <el-header>
           <i :class="collapseIcon" style="font-size: 26px;" @click="handleCollapse"></i>
           <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-left: 20px">
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/user' }">用户管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: $route.path}">{{ this.$route.meta.title }}</el-breadcrumb-item>
           </el-breadcrumb>
           <div style="flex: 1;width: 0;display: flex;align-items: center;justify-content: flex-end">
             <i class="el-icon-quanping" style="font-size: 26px" @click="handleFulls"></i>
             <el-dropdown placement="bottom">
               <div style="display: flex;align-items: center;cursor: default">
-                <img src="@/assets/logo.png" style="width: 40px;height: 40px">
-                <span>{{loginUser.name}}</span>
+                <img :src="loginUser.avatar||'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'" style="margin-left: 10px;width: 35px;height: 35px;border-radius: 50%">
+                <span style="margin-left: 10px">{{loginUser.name}}</span>
               </div>
               <!--头像下拉框-->
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>个人信息</el-dropdown-item>
-                <el-dropdown-item>修改密码</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push('/person')">个人信息</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push('/password')">修改密码</el-dropdown-item>
                 <el-dropdown-item @click.native="handleLogoOut">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -57,7 +56,7 @@
 
         <!--  主体区域-->
         <el-main>
-          <router-view/>
+          <router-view @update:user="updateUser"/>
         </el-main>
 
       </el-container>
@@ -66,7 +65,7 @@
   </div>
 </template>
 
-<script>5
+<script>
 export default {
   name: 'Manager',
   data () {
@@ -74,47 +73,18 @@ export default {
       isCollapse: false, //不收缩
       asideWidth: '200px',
       collapseIcon: 'el-icon-s-fold',
-      fileList:[],
-      users: [],
       loginUser: JSON.parse(localStorage.getItem('user') || '{}'),
-      url:'',
-      urls:[]
     }
   },
+  mounted () {
+
+  },
   methods: {
-
-    //预览图片
-    preview(url){
-      //默认图片是预览的
-      window.open(url)
+    //获取子组件的数据，更新父组件的数据
+    updateUser(user){
+      this.loginUser = JSON.parse(JSON.stringify(user));
     },
 
-    showUrls(){
-      console.log(this.urls)
-    },
-
-    //多文件上传成功的callbackFn
-    handleMultipleFileUploadSuccess(res, file, fileList){
-      this.urls = fileList.map(v=>v.response?.data)
-    },
-
-    //要拿到当前表格行对象
-    handleTableUpload(row,res, file, fileList){
-      //将图片地址赋值给当前行对象
-      row.avatar = res.response.data
-      //触发更新
-      this.$request.post('/user/saveOrUpdate',row).then(res=>{
-        if (res.code === '200'){
-          this.$message.success('头像上传成功')
-        }else {
-          this.$message.error(res.data.msg)
-        }
-      })
-    },
-    //:on-success="handleUploadSuccess" 上传成功后的钩子
-    handleUploadSuccess (response, file, fileList) {
-      this.fileList = fileList
-    },
     handleCollapse () {
       this.isCollapse = !this.isCollapse
       this.asideWidth = this.isCollapse ? '64px' : '200px'
@@ -133,13 +103,7 @@ export default {
       this.$router.push('/login')
     }
   },
-  mounted () {
-    this.$request.get('/user').then(res => {
-      if (res != null) {
-        this.users = res.data
-      }
-    })
-  }
+
 }
 </script>
 <style>
