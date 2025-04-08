@@ -73,6 +73,7 @@ public class UserController {
      * @param user
      * @return
      */
+
     @PostMapping("/register")
     public Result register(@RequestBody User user) {
         if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPassword())) {
@@ -105,11 +106,17 @@ public class UserController {
      */
     @PostMapping("/saveOrUpdate")
     public Result save(@RequestBody User user) {
+        if (StrUtil.isBlank(user.getUsername())){
+            return Result.error(Constants.CODE_400, "数据输入不合法");
+        }
+        if (StrUtil.isBlank(user.getPassword())){
+            user.setPassword("123456");
+        }
         try {
             userService.saveOrUpdate(user);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException) {
-                return Result.error(Constants.CODE_416, "插入数据库错误");
+                return Result.error(Constants.CODE_416, "用户名重复");
             } else {
                 return Result.error(Constants.CODE_500, "系统错误");
             }
@@ -123,12 +130,13 @@ public class UserController {
         return Result.success();
     }
 
-    @PostMapping("/del/batchByIds")
+    @DeleteMapping("/del/batchByIds")
     public Result deleteBatchByIds(@RequestBody List<Integer> ids) {
         userService.removeByIds(ids);
         return Result.success();
     }
 
+    @AuthAccess
     @GetMapping
     public Result findAll() {
         return Result.success(userService.list());
@@ -139,13 +147,27 @@ public class UserController {
         return Result.success(userService.getById(id));
     }
 
+    /**
+     * 分页查询
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @AuthAccess
     @GetMapping("/page")
     public Result findPage(@RequestParam Integer pageNum,
-                           @RequestParam Integer pageSize) {
+                           @RequestParam Integer pageSize,
+                           @RequestParam String username,
+                           @RequestParam String name) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("id");
+        queryWrapper.like(StrUtil.isNotBlank(username),"username",username);
+        queryWrapper.like(StrUtil.isNotBlank(name),"name",name);
         return Result.success(userService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
+
+
+
 
     /**
      * 根据id 和 username 查询

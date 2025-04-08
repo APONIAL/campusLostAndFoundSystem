@@ -1,5 +1,6 @@
 package com.example.lostandfoundbackend.service;
 
+import com.example.lostandfoundbackend.dto.UserDto;
 import com.example.lostandfoundbackend.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -22,4 +23,6 @@ public interface IUserService extends IService<User> {
     User login(User user);
 
     Boolean register(User user);
+
+    void resetPassword(UserDto userDto);
 }
