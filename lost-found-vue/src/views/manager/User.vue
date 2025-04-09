@@ -11,6 +11,14 @@
     <div style="margin:10px 0">
       <el-button type="primary" plain @click="handleAddDialog">新增</el-button>
       <el-button type="danger" plain @click="delBatch">批量删除</el-button>
+      <el-button type="info" plain @click="exportData">批量导出</el-button>
+      <el-upload
+        action="http://localhost:9090/user/import"
+        :headers="{token:user.token}"
+        :show-file-list="false"
+        :on-success="handleImport"
+        style=" display:inline-block;margin-left: 10px;"
+      ><el-button type="success" plain>批量导入</el-button></el-upload>
     </div>
     <el-table :data="tableData" stripe
               :header-cell-style="{backgroundColor:'aliceblue',color:'#666'}"
@@ -23,7 +31,7 @@
       <el-table-column prop="role" label="角色"></el-table-column>
       <el-table-column label="头像" align="center">
         <template v-slot="scope">
-          <el-image v-if="scope.row.avatar" :src="scope.row.avatar"
+          <el-image  :src="scope.row.avatar||'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png\''"
                     alt="" style="width: 50px;height: 50px;border-radius: 50%"
                     :preview-src-list="[scope.row.avatar]"
           />
@@ -43,9 +51,9 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="pageNum"
-        :page-sizes="[10, 20, 30]"
+        :page-sizes="[6, 12, 24]"
         :page-size="pageSize"
-        layout="total, sizes, prev, pager, next"
+        layout="total,sizes, prev, pager, next"
         :total="total">
       </el-pagination>
     </div>
@@ -104,7 +112,7 @@ export default {
       //当前页码
       pageNum: 1,
       //每页显示条数
-      pageSize: 10,
+      pageSize: 6,
       username: '',
       name: '',
       total: 0,
@@ -134,6 +142,38 @@ export default {
     this.getData()
   },
   methods: {
+    //上传数据给后台
+    handleImport(response,file,fileList){
+      console.log('response=>',response)
+      if (response.code === '200'){
+        this.$message({
+          type: 'success',
+          message: '导入成功!'
+        });
+        this.getData()
+      }else {
+        this.$message({
+          type: 'error',
+          message: '导入失败!  '+response.msg
+        });
+      }
+    },
+    //批量下载
+    exportData(){
+      //没有选中行数据，默认全部导出
+      if (!this.ids.length){
+        //打开新窗口，默认全部导出
+        //要携带token
+        window.open('http://localhost:9090/user/export?token='
+          +this.user.token+'&username='+this.username+'&name='+this.name)
+      }
+      const url = 'http://localhost:9090/user/export?token='
+        + this.user.token
+        + '&ids=' + this.ids.join(',');
+      window.open(url)
+    },
+
+
     //批量删除
     delBatch(){
       if (!this.ids.length){
