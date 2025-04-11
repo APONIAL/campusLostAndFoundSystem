@@ -10,7 +10,7 @@
         </div>
         <!--侧边栏菜单-->
         <!--default-active 选中后的菜单项变为激活状态-->
-        <el-menu :collapse="isCollapse" :collapse-transition="false" router background-color="#001529"
+        <el-menu :default-openeds="['info']" :collapse="isCollapse" :collapse-transition="false" router background-color="#001529"
                  text-color="rgba(255,255,255,0.65)" active-text-color="#fff"
                  style="border: none" :default-active="$route.path">
           <!--一级菜单-->
@@ -25,6 +25,7 @@
               <i class="el-icon-menu"></i><span>系统管理</span>
             </template>
             <el-menu-item index="/user">用户信息</el-menu-item>
+            <el-menu-item index="/news">新闻信息</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>

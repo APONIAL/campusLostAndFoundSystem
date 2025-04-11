@@ -51,6 +51,22 @@ const routes = [
         },
         component: () => import('../views/manager/Password')
       },
+      {
+        path: 'news',
+        name: 'News',
+        meta: {
+          title: '新闻信息'
+        },
+        component: () => import('../views/manager/News')
+      },
+      {
+        path: 'newsDetail',
+        name: 'NewsDetail',
+        meta: {
+          title: '新闻详情'
+        },
+        component: () => import('../views/manager/NewsDetail')
+      },
       ]
   },
   {
