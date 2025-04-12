@@ -31,6 +31,17 @@
     </properties>
     <dependencies>
 
+        <!--aop依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <!--用于日志打印-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+
         <!--JWT依赖-->
         <dependency>
             <groupId>com.auth0</groupId>

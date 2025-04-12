@@ -2,26 +2,24 @@ package com.example.lostandfoundbackend.controller;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.lostandfoundbackend.common.AuthAccess;
 import com.example.lostandfoundbackend.common.Constants;
+import com.example.lostandfoundbackend.common.Result;
 import com.example.lostandfoundbackend.dto.UserDto;
+import com.example.lostandfoundbackend.entity.User;
 import com.example.lostandfoundbackend.exception.ServiceException;
+import com.example.lostandfoundbackend.service.IUserService;
 import com.example.lostandfoundbackend.utils.TokenUtils;
 import io.swagger.annotations.Api;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.lostandfoundbackend.common.Result;
-
-import com.example.lostandfoundbackend.service.IUserService;
-import com.example.lostandfoundbackend.entity.User;
-
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -38,7 +36,7 @@ public class UserController {
 
     @Resource
     private IUserService userService;
-
+    private static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     /**
      * 登录

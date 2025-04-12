@@ -67,6 +67,14 @@ const routes = [
         },
         component: () => import('../views/manager/NewsDetail')
       },
+      {
+        path: 'notice',
+        name: 'Notice',
+        meta: {
+          title: '系统公告'
+        },
+        component: () => import('../views/manager/Notice')
+      },
       ]
   },
   {
