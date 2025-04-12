@@ -8,7 +8,8 @@ package com.example.lostandfoundbackend.common;
  */
 public enum LogType {
     //枚举查询类型
-    ADD("新增"),UPDATE("修改"),DELETE("删除"),LOGIN("登录"),REGISTER("注册"),FORGET_PASSWORD("忘记密码"),OTHER("其他");
+    ADD("新增"),UPDATE("修改"),DELETE("删除"),BATCH_DELETE("批量删除"),LOGIN("登录"),REGISTER("注册"),
+    ADD_OR_UPDATE("新增或者修改"),FORGET_PASSWORD("忘记密码"),OTHER("其他"),;
 
     /**
      * 枚举值

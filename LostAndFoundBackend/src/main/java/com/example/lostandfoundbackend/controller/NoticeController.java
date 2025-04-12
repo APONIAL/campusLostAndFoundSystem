@@ -3,6 +3,8 @@ package com.example.lostandfoundbackend.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.lostandfoundbackend.common.CustomLogs;
+import com.example.lostandfoundbackend.common.LogType;
 import com.example.lostandfoundbackend.entity.User;
 import com.example.lostandfoundbackend.service.IUserService;
 import com.example.lostandfoundbackend.utils.TokenUtils;
@@ -35,6 +37,7 @@ public class NoticeController {
     private IUserService userService;
 
     // 新增或者更新
+    @CustomLogs(operation = "公告", type = LogType.ADD_OR_UPDATE)
     @PostMapping("/saveOrUpdate")
     public Result save(@RequestBody Notice notice) {
         User currentUser = TokenUtils.getCurrentUser();
@@ -45,12 +48,14 @@ public class NoticeController {
         return Result.success();
     }
 
+    @CustomLogs(operation = "公告", type = LogType.DELETE)
     @DeleteMapping("/{id}")
     public Result deleteById(@PathVariable Integer id) {
         noticeService.removeById(id);
         return Result.success();
     }
 
+    @CustomLogs(operation = "公告", type = LogType.BATCH_DELETE)
     @DeleteMapping("/del/batchByIds")
     public Result deleteBatchByIds(@RequestBody List<Integer> ids) {
         noticeService.removeByIds(ids);

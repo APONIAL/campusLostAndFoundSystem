@@ -79,6 +79,7 @@ public class FileController {
      * @throws IOException
      */
     @PostMapping("/editor/upload")
+
     public Dict editorUpload(@RequestParam MultipartFile file,@RequestParam String type) throws IOException {
         //文件的原始名称
         String originalFilename = file.getOriginalFilename();

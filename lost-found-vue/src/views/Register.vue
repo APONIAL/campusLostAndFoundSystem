@@ -98,8 +98,8 @@ export default {
         if (valid) {
           this.$request.post('/user/register', this.user).then(res => {
             if (res.code === '200') {
-              this.$router.push('/')
               this.$message.success("注册成功")
+              this.$router.push('/login')
             } else {
               this.$message.error(res.data.msg)
             }

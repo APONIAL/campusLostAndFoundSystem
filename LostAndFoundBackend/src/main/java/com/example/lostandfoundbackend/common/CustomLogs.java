@@ -19,5 +19,5 @@ public @interface CustomLogs {
     /**
      * 操作类型，如 新增，删除，修改
      */
-    String type();
+    LogType type();
 }

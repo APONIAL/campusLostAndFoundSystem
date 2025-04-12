@@ -27,6 +27,7 @@
             <el-menu-item index="/user">用户信息</el-menu-item>
             <el-menu-item index="/news">新闻信息</el-menu-item>
             <el-menu-item index="/notice">系统公告</el-menu-item>
+            <el-menu-item index="/logs">系统日志</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>

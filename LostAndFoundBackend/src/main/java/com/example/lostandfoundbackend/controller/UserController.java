@@ -4,9 +4,7 @@ package com.example.lostandfoundbackend.controller;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.lostandfoundbackend.common.AuthAccess;
-import com.example.lostandfoundbackend.common.Constants;
-import com.example.lostandfoundbackend.common.Result;
+import com.example.lostandfoundbackend.common.*;
 import com.example.lostandfoundbackend.dto.UserDto;
 import com.example.lostandfoundbackend.entity.User;
 import com.example.lostandfoundbackend.exception.ServiceException;
@@ -45,6 +43,7 @@ public class UserController {
      * @return
      */
     @AuthAccess
+    @CustomLogs(operation = "用户", type = LogType.LOGIN)
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
         if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPassword())) {
@@ -72,6 +71,7 @@ public class UserController {
      * @return
      */
 
+    @CustomLogs(operation = "用户", type = LogType.REGISTER)
     @PostMapping("/register")
     public Result register(@RequestBody User user) {
         if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPassword())) {
@@ -103,6 +103,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/saveOrUpdate")
+    @CustomLogs(operation = "用户", type = LogType.ADD_OR_UPDATE)
     public Result save(@RequestBody User user) {
         if (StrUtil.isBlank(user.getUsername())){
             return Result.error(Constants.CODE_400, "数据输入不合法");
@@ -123,12 +124,14 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @CustomLogs(operation = "用户", type = LogType.DELETE)
     public Result deleteById(@PathVariable Integer id) {
         userService.removeById(id);
         return Result.success();
     }
 
     @DeleteMapping("/del/batchByIds")
+    @CustomLogs(operation = "用户", type = LogType.BATCH_DELETE)
     public Result deleteBatchByIds(@RequestBody List<Integer> ids) {
         userService.removeByIds(ids);
         return Result.success();
@@ -151,7 +154,6 @@ public class UserController {
      * @param pageSize
      * @return
      */
-    @AuthAccess
     @GetMapping("/page")
     public Result findPage(@RequestParam Integer pageNum,
                            @RequestParam Integer pageSize,

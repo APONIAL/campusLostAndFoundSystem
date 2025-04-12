@@ -47,7 +47,17 @@ request.interceptors.response.use(response => {
       window.sessionStorage.clear()
       router.push('/login')
     }).catch(res => res)
-  } else {
+  }else if(res.code === '401'){
+    Message({
+      message: res.msg,
+      type: 'error',
+      duration: 3000
+    })
+    router.push('/login')
+  }
+
+
+  else {
     Message({
       message: res.msg,
       type: 'error',

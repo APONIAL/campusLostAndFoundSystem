@@ -75,6 +75,14 @@ const routes = [
         },
         component: () => import('../views/manager/Notice')
       },
+      {
+        path: 'logs',
+        name: 'logs',
+        meta: {
+          title: '系统日志'
+        },
+        component: () => import('../views/manager/Logs')
+      },
       ]
   },
   {
