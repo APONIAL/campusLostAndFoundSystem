@@ -30,6 +30,7 @@ request.interceptors.request.use(config => {
 //response拦截器
 //可以在请求发出去之后做一些处理
 //比如统一处理错误，对返回的数据进行统一处理
+
 request.interceptors.response.use(response => {
   let res = response.data
   // 兼容服务器端返回的字符串数据
@@ -54,10 +55,7 @@ request.interceptors.response.use(response => {
       duration: 3000
     })
     router.push('/login')
-  }
-
-
-  else {
+  } else {
     Message({
       message: res.msg,
       type: 'error',
@@ -70,7 +68,7 @@ request.interceptors.response.use(response => {
   if (error.response) {
     // 根据响应状态码进行错误处理
     switch (error.response.status) {
-      case 401:
+      case "401":
         console.error('Unauthorized access, redirecting to login')
         // 可以在此处跳转到登录页或其他处理逻辑
         break

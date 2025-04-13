@@ -83,6 +83,22 @@ const routes = [
         },
         component: () => import('../views/manager/Logs')
       },
+      {
+        path: 'charts',
+        name: 'Charts',
+        meta: {
+          title: '数据统计'
+        },
+        component: () => import('../views/manager/Charts')
+      },
+      {
+        path: 'orders',
+        name: 'Orders',
+        meta: {
+          title: '订单管理'
+        },
+        component: () => import('../views/manager/Orders')
+      },
       ]
   },
   {

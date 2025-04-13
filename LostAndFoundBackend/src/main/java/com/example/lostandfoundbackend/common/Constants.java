@@ -11,7 +11,7 @@ public interface Constants {
     /**
      * 权限错误
      */
-    String CODE_401 = "0";
+    String CODE_401 = "401";
     //参数错误
     String CODE_400 = "400";
     //系统出错

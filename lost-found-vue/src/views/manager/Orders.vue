@@ -2,7 +2,7 @@
   <div>
     <!--查询框-->
     <div>
-      <el-input style="width: 200px" placeholder="查询标题" clearable v-model="title"></el-input>
+      <el-input style="width: 200px" placeholder="查询名称" clearable v-model="name"></el-input>
       <el-button type="primary" style="margin-left: 10px" @click="getData(1)">查询</el-button>
       <el-button type="info" @click="reset">重置</el-button>
     </div>
@@ -18,15 +18,11 @@
     >
       <el-table-column type="selection" width="55" align="center"></el-table-column>
       <el-table-column prop="id" label="序号" min-width="30"></el-table-column>
-      <el-table-column prop="title" label="标题"></el-table-column>
-      <el-table-column prop="content" label="内容" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="user" label="发布人"></el-table-column>
-      <el-table-column prop="time" label="发布时间"></el-table-column>
-      <el-table-column label="是否公开" >
-        <template v-slot="scope">
-          <el-switch v-model="scope.row.open" @change="changeOpen(scope.row)"></el-switch>
-        </template>
-      </el-table-column>
+      <el-table-column prop="no" label="订单编号"></el-table-column>
+      <el-table-column prop="name" label="订单名称" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="money" label="订单金额"></el-table-column>
+      <el-table-column prop="user" label="所属用户"></el-table-column>
+      <el-table-column prop="date" label="创建时间"></el-table-column>
       <el-table-column label="操作" width="180" min-width="120%" align="center">
         <template v-slot="scope">
           <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
@@ -47,14 +43,21 @@
       </el-pagination>
     </div>
     <!--弹窗嵌套表单-->
-    <el-dialog title="公告" :visible.sync="formVisible"
+    <el-dialog title="信息" :visible.sync="formVisible"
                width="40%" :close-on-click-modal="false">
       <el-form :model="form" label-width="80px" style="padding-right: 20px" :rules="rules" ref="formRef">
-        <el-form-item label="标题" prop="title">
-          <el-input v-model="form.title"></el-input>
+        <el-form-item label="订单名称" prop="name">
+          <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="内容" prop="content">
-          <el-input type="textarea" v-model="form.content"></el-input>
+        <el-form-item label="订单金额" prop="money">
+          <el-input v-model="form.money"></el-input>
+        </el-form-item>
+        <el-form-item label="订单分类" prop="category">
+          <el-select style="width: 100%" v-model="form.category">
+            <el-option v-for="item in ['水果','蔬菜','零食','饮料','奶制品','糕点']"
+                       :key="item" :value="item">
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -70,7 +73,7 @@
 <script>
 
 export default {
-  name: 'News',
+  name: 'Orders',
   title: '',
   data() {
     return {
@@ -81,7 +84,7 @@ export default {
       //每页显示条数
       pageSize: 6,
       username: '',
-      title: '',
+      name: '',
       total: 0,
       formVisible: false,
       form: {},
@@ -89,21 +92,28 @@ export default {
       ids: [],
       content: '',
       rules: {
-        title: [
+        name: [
           {
             required: true,
-            message: '请输入标题',
+            message: '请输入订单名称',
             trigger: 'blur'
           }
         ],
-        content: [
+        money: [
           {
             required: true,
-            message: '请输入内容',
+            message: '请输入订单金额',
             trigger: 'blur'
           }
         ],
-      }
+        category: [
+          {
+            required: true,
+            message: '请选择订单分类',
+            trigger: 'blur'
+          }
+        ]
+     }
     }
   },
   mounted() {
@@ -134,7 +144,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$request.delete('/notice/del/batchByIds', {data: this.ids}).then(res => {
+        this.$request.delete('/orders/del/batchByIds', {data: this.ids}).then(res => {
           if (res.code === '200') {
             this.$message({
               type: 'success',
@@ -164,7 +174,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$request.delete('/notice/' + id).then(res => {
+        this.$request.delete('/orders/' + id).then(res => {
           if (res.code === '200') {
             this.$message({
               type: 'success',
@@ -190,7 +200,7 @@ export default {
     },
 
     sendSaveOrUpdateRequest() {
-      this.$request.post('/notice/saveOrUpdate', this.form).then(res => {
+      this.$request.post('/orders/saveOrUpdate', this.form).then(res => {
         if (res.code === '200') {
           this.$message.success('保存成功')
           this.getData(1)
@@ -218,32 +228,28 @@ export default {
       this.setRichText()
     },
 
-    // handleFromAvaSuccess(response,file,fileList){
-    //    this.form.avatar = response.data
-    // },
-
     reset() {
-      this.title = ''
+      this.name = ''
     },
 
     //从后端获取数据
     getData(pageNum) {
       // 解决在第二页点击查询后，数据在第一页，而显示的是第二页
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/notice/page', {
+      this.$request.get('/orders/page', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          title: this.title,
+          name: this.name,
         }
       }).then(res => {
-        if (res.code === '200'){
+        if (res.code === '200') {
           this.tableData = res.data.records
           this.total = res.data.total
         } else {
           this.$message.error(res.data.msg)
         }
-      }).catch(res=>res)
+      }).catch(res => res)
     },
     handleSizeChange(val) {
       this.pageSize = val
@@ -263,7 +269,8 @@ export default {
 ::v-deep .el-dialog__body {
   padding: 20px 10px;
 }
-.el-tooltip__popper{
+
+.el-tooltip__popper {
   max-width: 50% !important;
   font-size: 15px;
 }
