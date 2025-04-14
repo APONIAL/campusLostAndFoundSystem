@@ -99,7 +99,7 @@ const routes = [
         },
         component: () => import('../views/manager/Orders')
       },
-      ]
+    ]
   },
   {
     path: '/login',
@@ -117,6 +117,18 @@ const routes = [
     },
     component: () => import('../views/Register')
   },
+
+  {
+    path: '/front',
+    name: 'Front',
+    redirect: '/front/home',
+    component: () => import('../views/Front'),
+    children: [
+      {path: 'home', name: 'FrontHome', meta: {title: '首页'}, component: () => import('../views/front/Home')},
+      {path: 'person', name: 'FontPerson', meta: {title: '个人信息'}, component: () => import('../views/front/Person')},
+    ]
+  },
+
   {
     path: '*',
     name: '404',
@@ -124,13 +136,13 @@ const routes = [
       title: '404'
     },
     component: () => import('../views/404')
-  }
+  },
 
 
 ]
 const originalPush = VueRouter.prototype.push
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
-VueRouter.prototype.push = function push (location) {
+VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
@@ -143,10 +155,10 @@ router.beforeEach((to, from, next) => {
   let adminPaths = ['/user']
   //如果当前登录的用户不是管理，并且要to的路径是管理员路径，则跳转到无权限页面
   console.log(to)
-  let user = JSON.parse(localStorage.getItem('user')||'{}')
-  if (user.role !== 'ADMIN' && adminPaths.includes(to.path)){
+  let user = JSON.parse(localStorage.getItem('user') || '{}')
+  if (user.role !== 'ADMIN' && adminPaths.includes(to.path)) {
     next('/403')
-  }else{
+  } else {
     next()
   }
 })

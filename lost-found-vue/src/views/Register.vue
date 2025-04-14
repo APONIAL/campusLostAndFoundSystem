@@ -4,7 +4,7 @@
     <div style="display: flex;background-color: white;width: 50%;border-radius: 5px;overflow: hidden">
       <!--左边图片框-->
       <div style="flex: 1;">
-        <img src="@/assets/logo.png" alt="" style="width: 100%">
+        <img src="@/assets/imgs/logo.png" alt="" style="width: 100%">
       </div>
       <!--右边登录框-->
       <div style="flex: 1;display: flex;align-items: center;justify-content: left">

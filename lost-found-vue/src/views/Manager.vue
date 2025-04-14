@@ -5,7 +5,7 @@
       <el-aside :width="asideWidth" style="min-height: 100vh;background-color: #001529">
         <!--侧边栏logo-->
         <div style="height: 60px;color: white; display: flex; align-items: center;justify-content: center">
-          <img src="@/assets/logo.png" style="width: 50px;height: 50px">
+          <img src="@/assets/imgs/logo.png" style="width: 50px;height: 50px">
           <span class="logo-title" v-show="!isCollapse">失物招领后台</span>
         </div>
         <!--侧边栏菜单-->

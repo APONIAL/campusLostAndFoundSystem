@@ -4,7 +4,7 @@
     <div style="display: flex;background-color: white;width: 50%;border-radius: 5px;overflow: hidden">
       <!--左边图片框-->
       <div style="flex: 1;">
-        <img src="@/assets/logo.png" alt="" style="width: 100%">
+        <img src="@/assets/imgs/logo.png" alt="" style="width: 100%">
       </div>
       <!--右边登录框-->
       <div style="flex: 1;display: flex;align-items: center;justify-content: left">
@@ -20,6 +20,14 @@
             <el-input prefix-icon="el-icon-lock" size="medium" show-password placeholder="请输入密码"
                       v-model="user.password"></el-input>
           </el-form-item>
+          <!--<el-form-item prop="role">-->
+          <!--  <el-select v-model="user.role" placeholder="请选择">-->
+          <!--    <el-option label="管理员" value="ADMIN"></el-option>-->
+          <!--    <el-option label="用户" value="USER"></el-option>-->
+          <!--  </el-select>-->
+          <!--</el-form-item>-->
+
+
           <el-form-item prop="checkCode">
             <div style="display: flex">
               <el-input prefix-icon="el-icon-circle-check" size="medium" style="flex: 1"
@@ -140,7 +148,11 @@ export default {
             //验证码正确
             this.$request.post('/user/login', this.user).then(res => {
               if (res.code === '200') {
-                this.$router.push('/')
+                if (res.data.role === 'USER'){
+                  this.$router.push('/front')
+                }else{
+                  this.$router.push('/')
+                }
                 this.$message.success('登录成功')
                 //存儲用户信息
                 localStorage.setItem('user', JSON.stringify(res.data))

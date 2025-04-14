@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.lostandfoundbackend.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.Objects;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
+    @Resource
+    private UserMapper userMapper;
     @Override
     public Object findByIdAndName(Integer id, String username) {
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
@@ -97,4 +100,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         return super.removeByIds(list);
     }
+
+    @Override
+    public void updatePassword(UserDto userDto){
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        User currentUser = TokenUtils.getCurrentUser();
+        if (currentUser == null){
+            throw new ServiceException("请先登录");
+        }
+        if (currentUser.getPassword().equals(userDto.getPassword())){
+            currentUser.setPassword(userDto.getNewPassword());
+            saveOrUpdate(currentUser);
+        }else {
+            throw new ServiceException("原始密码错误");
+        }
+    }
+
+
 }

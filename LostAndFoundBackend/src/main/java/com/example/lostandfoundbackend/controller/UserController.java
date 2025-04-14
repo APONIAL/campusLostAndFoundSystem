@@ -165,7 +165,11 @@ public class UserController {
         queryWrapper.like(StrUtil.isNotBlank(name),"name",name);
         return Result.success(userService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
-
+    @PostMapping("/updatePassword")
+    public Result updatePassword(@RequestBody UserDto userDto){
+        userService.updatePassword(userDto);
+        return Result.success();
+    }
 
 
 

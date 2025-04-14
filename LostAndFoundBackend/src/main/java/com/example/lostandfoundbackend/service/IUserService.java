@@ -25,4 +25,6 @@ public interface IUserService extends IService<User> {
     Boolean register(User user);
 
     void resetPassword(UserDto userDto);
+
+    void updatePassword(UserDto userDto);
 }

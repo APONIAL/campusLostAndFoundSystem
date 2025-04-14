@@ -16,7 +16,7 @@ export default {
 
 <style scoped>
 .bgImg{
-  background: url("@/assets/404.png") no-repeat;
+  background: url("@/assets/imgs/404.png") no-repeat;
   background-size: 100% 100vh;
   height: 100vh;
 }
