@@ -11,7 +11,6 @@
       <el-button type="primary" plain @click="handleAddDialog">新增</el-button>
       <el-button type="danger" plain @click="delBatch">批量删除</el-button>
     </div>
-    `
     <el-table :data="tableData" stripe
               :header-cell-style="{backgroundColor:'aliceblue',color:'#666'}"
               @selection-change="handleSelectionChange"

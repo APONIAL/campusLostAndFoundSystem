@@ -111,7 +111,7 @@ export default {
 
 }
 </script>
-<style>
+<style scoped>
 /*要定位到二级菜单的样式 一级二级菜单都有这个.el-menu-item，二级子菜单在.el-menu--inline中*/
 /*!important 覆盖默认样式*/
 .el-menu--inline {

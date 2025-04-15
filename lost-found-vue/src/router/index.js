@@ -126,6 +126,7 @@ const routes = [
     children: [
       {path: 'home', name: 'FrontHome', meta: {title: '首页'}, component: () => import('../views/front/Home')},
       {path: 'person', name: 'FontPerson', meta: {title: '个人信息'}, component: () => import('../views/front/Person')},
+      {path: 'myLost', name: 'MyLost', meta: {title: '我的失物'}, component: () => import('../views/front/MyLost')},
     ]
   },
 

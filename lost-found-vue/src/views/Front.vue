@@ -25,14 +25,14 @@
         <div v-else>
           <el-dropdown>
             <div class="front-header-dropdown">
-              <img :src="user.avatar" alt="">
+              <img :src="user.avatar||'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'" alt="">
               <div style="margin-left: 10px">
                 <span>{{ user.name }}</span><i class="el-icon-arrow-down" style="margin-left: 5px"></i>
               </div>
             </div>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
-                <div @click="$router.push('/front/activitySign')">我报名的活动</div>
+                <div @click="$router.push('/front/myLost')">我的失物</div>
               </el-dropdown-item>
               <el-dropdown-item>
                 <div @click="$router.push('/front/reserve')">我预约的服务</div>
@@ -103,9 +103,7 @@ export default {
 
 }
 </script>
-
+<style src="../assets/css/front.css" scoped></style>
 <style scoped>
-@import "@/assets/css/front.css";
-
 
 </style>

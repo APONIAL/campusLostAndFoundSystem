@@ -62,16 +62,18 @@
 /*设置菜单*/
 .el-menu-item {
     color: #333 !important;
-    margin-top: 10px !important;
     margin-left: 10px !important;
     text-align: center !important;
+
 }
 /*设置导航菜单激活样式*/
 .el-menu-item.is-active {
     background-color: #1d7bc9 !important;
     text-align: center !important;
+    align-content: center !important;
     width: 100px !important;
     color: white !important;
+    border-radius: 5px;
 }
 .el-menu-item:not(.is-active):hover {
     background-color: #578bba !important;
