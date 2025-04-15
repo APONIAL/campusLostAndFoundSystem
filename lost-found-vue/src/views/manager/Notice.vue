@@ -213,8 +213,6 @@ export default {
       //打开新增窗口前，清空上次残留数据
       this.form = {}
       this.formVisible = true
-      //等div 渲染完毕，再创建富文本编辑器
-      this.setRichText()
     },
 
     // handleFromAvaSuccess(response,file,fileList){

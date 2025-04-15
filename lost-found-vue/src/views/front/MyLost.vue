@@ -14,7 +14,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="name" label="物品名称"></el-table-column>
-        <el-table-column prop="content" label="物品描述" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="content" label="物品描述" align="center">
+          <template v-slot="scope">
+            <el-button @click="showContent(scope.row.content)" plain type="success" size="mini">点击查看</el-button>
+          </template>
+        </el-table-column>
         <el-table-column prop="status" label="状态">
           <template v-slot="scope">
             <el-tag v-if="scope.row.status === false" type="danger">丢失中</el-tag>
@@ -44,7 +48,7 @@
       </div>
       <!--弹窗嵌套表单-->
       <el-dialog title="失物信息" :visible.sync="formVisible"
-                 width="40%" :close-on-click-modal="false">
+                 width="40%" :close-on-click-modal="false" @close="closeDialog">
         <el-form :model="form" label-width="80px" style="padding-right: 20px" :rules="rules" ref="formRef">
           <el-form-item label="物品图片" prop="img">
             <el-upload
@@ -66,21 +70,28 @@
             </el-select>
           </el-form-item>
           <el-form-item label="物品描述" prop="content">
-            <el-input type="textarea" v-model="form.content"></el-input>
+            <div id="editor"></div>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="formVisible = false">取 消</el-button>
           <el-button type="primary" @click="sendSaveOrUpdateRequest">确 定</el-button>
         </div>
-
       </el-dialog>
     </div>
-
+    <!--弹窗显示富文本内容-->
+    <el-dialog title="内容" :visible.sync="formVisibleContent" width="60%">
+      <div class="w-e-text">
+        <div v-html="content"></div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import E from "wangeditor";
+import hljs from "highlight.js";
+
 export default {
   name: "MyLost",
   data() {
@@ -95,13 +106,52 @@ export default {
       total: 0,
       loginUser: JSON.parse(localStorage.getItem('user') || '{}'),
       //上传成功后提供图片预览列表
-      fileList: []
+      fileList: [],
+      editor: null,
+      formVisibleContent:false,
+      content:''
     }
   },
   mounted() {
     this.getData();
   },
   methods: {
+    //用弹窗显示内容
+    showContent(content) {
+      this.content = content
+      this.formVisibleContent = true
+    },
+
+    //设置富文本
+    setRichText() {
+      this.$nextTick(() => {
+        this.editor = new E(`#editor`)
+        this.editor.highlight = hljs
+        this.editor.config.uploadImgServer = this.$baseUrl + '/file/editor/upload'
+        this.editor.config.uploadFileName = 'file'
+        this.editor.config.uploadImgHeaders = {
+          token: this.loginUser.token
+        }
+        this.editor.config.uploadImgParams = {
+          type: 'img'
+        }
+        this.editor.config.uploadVideoServer = this.$baseUrl + '/file/editor/upload'
+        this.editor.config.uploadVideoName = 'file'
+        this.editor.config.uploadVideoHeaders = {
+          token: this.loginUser.token
+        }
+        this.editor.config.uploadVideoParams = {
+          type: 'video'
+        }
+        this.editor.create()
+      })
+    },
+    //关闭弹窗的回调
+    closeDialog() {
+      //销毁编辑器
+      this.editor.destroy()
+      this.editor = null
+    },
 
     //上传成功后的回调函数
     handleUploadSuccess(res, file) {
@@ -140,13 +190,23 @@ export default {
       this.formVisible = true
       //给form对象赋值，要深度拷贝
       this.form = JSON.parse(JSON.stringify(row))
+      //创建富文本容器
+      this.setRichText()
+      //设置编辑框的内容 延迟加载
+      setTimeout(() => {
+        this.editor.txt.html(this.form.content)
+      })
     },
     handleAddLost() {
       //打开新增窗口前，清空上次残留数据
       this.form = {}
       this.formVisible = true
+      //等div 渲染完毕，再创建富文本编辑器
+      this.setRichText()
     },
     sendSaveOrUpdateRequest() {
+      //获取编辑框的内容并发送
+      this.form.content = this.editor.txt.html()
       this.$request.post('/lostInfo/saveOrUpdate', this.form).then(res => {
         if (res.code === '200') {
           this.$message.success('保存成功')
@@ -190,5 +250,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
