@@ -2,20 +2,17 @@ package com.example.lostandfoundbackend.controller;
 
 
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.lostandfoundbackend.common.Result;
+import com.example.lostandfoundbackend.entity.LostInfo;
+import com.example.lostandfoundbackend.service.ILostInfoService;
 import com.example.lostandfoundbackend.service.IUserService;
 import com.example.lostandfoundbackend.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.lostandfoundbackend.common.Result;
-
-import com.example.lostandfoundbackend.service.ILostInfoService;
-import com.example.lostandfoundbackend.entity.LostInfo;
-
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -55,9 +52,19 @@ public class LostInfoController {
         return Result.success();
     }
 
-    @GetMapping
-    public Result findAll() {
-        return Result.success(lostInfoService.list());
+    @GetMapping("/selectNew4")
+    public Result selectNew4() {
+        QueryWrapper<LostInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("id");
+        queryWrapper.eq("status",0);
+        queryWrapper.last("limit 4");
+
+        List<LostInfo> list = lostInfoService.list(queryWrapper);
+        list.forEach(lostInfo -> {
+            lostInfo.setUser(userService.getById(lostInfo.getUserId()) == null ?
+                    "用户已注销" : userService.getById(lostInfo.getUserId()).getName());
+        });
+        return Result.success(list);
     }
 
     @GetMapping("/{id}")
