@@ -224,7 +224,7 @@ export default {
     getData(pageNum) {
       // 解决在第二页点击查询后，数据在第一页，而显示的是第二页
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/lostInfo/page', {
+      this.$request.get('/lostInfo/myLostListPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,

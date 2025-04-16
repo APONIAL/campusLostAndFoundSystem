@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -72,12 +73,33 @@ public class LostInfoController {
         return Result.success(lostInfoService.getById(id));
     }
 
-    @GetMapping("/page")
-    public Result findPage(@RequestParam Integer pageNum,
+    /**
+     * front 查看我的失物信息的分页接口
+     * @param pageNum 页码
+     * @param pageSize 每页数量
+     * @return result
+     */
+    @GetMapping("/myLostListPage")
+    public Result myLostListPage(@RequestParam Integer pageNum,
                                 @RequestParam Integer pageSize) {
         QueryWrapper<LostInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("id");
-        queryWrapper.eq("user_id", TokenUtils.getCurrentUser().getId());
+        queryWrapper.eq("user_id", Objects.requireNonNull(TokenUtils.getCurrentUser()).getId());
+        Page<LostInfo> page = lostInfoService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        return Result.success(page);
+    }
+
+    /**
+     * front 失物广场分页接口
+     * @param pageNum 页码
+     * @param pageSize 每页数量
+     * @return result
+     */
+    @GetMapping("/lostSquarePage")
+    public Result lostSquarePage(@RequestParam Integer pageNum,
+                                 @RequestParam Integer pageSize) {
+        QueryWrapper<LostInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("id");
         Page<LostInfo> page = lostInfoService.page(new Page<>(pageNum, pageSize), queryWrapper);
         page.getRecords().forEach(lostInfo -> {
             lostInfo.setUser(userService.getById(lostInfo.getUserId()) == null ?

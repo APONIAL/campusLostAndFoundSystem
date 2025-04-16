@@ -11,7 +11,7 @@
         <div class="front-header-nav">
           <el-menu :default-active="$route.path" mode="horizontal" router>
             <el-menu-item index="/front/home" style="width: 96px !important;">首页</el-menu-item>
-            <el-menu-item index="/front/activity">失物广场</el-menu-item>
+            <el-menu-item index="/front/lostSquare">失物广场</el-menu-item>
             <el-menu-item index="/front/serve">招领广场</el-menu-item>
             <el-menu-item index="/front/person">个人中心</el-menu-item>
           </el-menu>

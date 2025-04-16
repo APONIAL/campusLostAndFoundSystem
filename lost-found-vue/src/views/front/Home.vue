@@ -18,7 +18,7 @@
               </div>
               <div style="margin-top: 40px">
                 <el-row :gutter="20">
-                  <el-col :span="12" v-for="item in lostData" style="margin-bottom: 20px">
+                  <el-col :span="12" v-for="item in lostData" style="margin-bottom: 20px" :key="item.id">
                     <div class="transition card" style="margin-left: 3px">
                       <div style="display: flex">
                         <img :src="item.img" alt=""
@@ -30,7 +30,7 @@
                         </div>
                       </div>
                       <div style="margin-top: 20px">
-                        <el-button type="info">查看详情</el-button>
+                        <el-button type="info"  @click="showContent(item.content)">查看详情</el-button>
                         <el-button type="success">联系失主</el-button>
                       </div>
                     </div>
@@ -91,6 +91,13 @@
           </el-col>
         </el-row>
       </div>
+
+      <!--弹窗显示富文本内容-->
+      <el-dialog title="内容" :visible.sync="formVisibleContent" width="60%">
+        <div class="w-e-text">
+          <div v-html="content"></div>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -106,13 +113,21 @@ export default {
         require('@/assets/imgs/carousel3.jpeg')
       ],
       lostData: [],
-      foundData: []
+      foundData: [],
+      formVisibleContent:false,
+      content:''
     }
   },
   mounted() {
     this.getLostData();
   },
   methods: {
+    //用弹窗显示内容
+    showContent(content) {
+      this.content = content
+      this.formVisibleContent = true
+    },
+
     getLostData() {
       this.$request.get('/lostInfo/selectNew4').then(res=>{
         if (res.code==='200'){
@@ -127,5 +142,8 @@ export default {
 </script>
 
 <style scoped>
-
+/*设置弹窗位置*/
+::v-deep .el-dialog__header{
+  margin-top: 300px !important;
+}
 </style>
