@@ -4,6 +4,7 @@ package com.example.lostandfoundbackend.controller;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.lostandfoundbackend.common.AuthAccess;
 import com.example.lostandfoundbackend.common.Result;
 import com.example.lostandfoundbackend.entity.LostInfo;
 import com.example.lostandfoundbackend.service.ILostInfoService;
@@ -95,6 +96,7 @@ public class LostInfoController {
      * @param pageSize 每页数量
      * @return result
      */
+    @AuthAccess
     @GetMapping("/lostSquarePage")
     public Result lostSquarePage(@RequestParam Integer pageNum,
                                  @RequestParam Integer pageSize) {

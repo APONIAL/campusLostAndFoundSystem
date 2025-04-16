@@ -91,14 +91,8 @@ const routes = [
         },
         component: () => import('../views/manager/Charts')
       },
-      {
-        path: 'orders',
-        name: 'Orders',
-        meta: {
-          title: '订单管理'
-        },
-        component: () => import('../views/manager/Orders')
-      },
+      {path: 'orders', name: 'Orders', meta: {title: '订单管理'}, component: () => import('../views/manager/Orders')},
+      {path: 'lostContact', name: 'LostContact', meta: {title: '留言管理'}, component: () => import('../views/manager/LostContact')},
     ]
   },
   {
@@ -127,7 +121,12 @@ const routes = [
       {path: 'home', name: 'FrontHome', meta: {title: '首页'}, component: () => import('../views/front/Home')},
       {path: 'person', name: 'FontPerson', meta: {title: '个人信息'}, component: () => import('../views/front/Person')},
       {path: 'myLost', name: 'MyLost', meta: {title: '我的失物'}, component: () => import('../views/front/MyLost')},
-      {path: 'lostSquare', name: 'LostSquare', meta: {title: '失物广场'}, component: () => import('../views/front/LostSquare')},
+      {
+        path: 'lostSquare',
+        name: 'LostSquare',
+        meta: {title: '失物广场'},
+        component: () => import('../views/front/LostSquare')
+      },
     ]
   },
 

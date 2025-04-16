@@ -30,13 +30,11 @@
                         </div>
                       </div>
                       <div style="margin-top: 20px">
-                        <el-button type="info"  @click="showContent(item.content)">查看详情</el-button>
-                        <el-button type="success">联系失主</el-button>
+                        <el-button type="info" @click="showContent(item.content)">查看详情</el-button>
+                        <el-button type="success" @click="handleAddContact(item.userId)">联系失主</el-button>
                       </div>
                     </div>
                   </el-col>
-
-
 
 
                 </el-row>
@@ -99,6 +97,22 @@
         </div>
       </el-dialog>
     </div>
+    <!--弹窗显示联系失主-->
+    <el-dialog title="联系失主" :visible.sync="formVisibleContact"
+               width="40%">
+      <el-form :model="contactForm" label-width="80px" style="padding-right: 20px" ref="formRef">
+        <el-form-item label="联系方式" prop="contactMethod">
+          <el-input v-model="contactForm.contactMethod"></el-input>
+        </el-form-item>
+        <el-form-item label="内容" prop="content">
+          <el-input type="textarea" v-model="contactForm.content"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="formVisibleContact = false">取 消</el-button>
+        <el-button type="primary" @click="saveContact">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -107,15 +121,16 @@ export default {
   name: "Home",
   data() {
     return {
-      carouselData: [
-        // require('@/assets/imgs/carousel1.jpg'),
+      carouselData:[
         require('@/assets/imgs/carousel2.png'),
         require('@/assets/imgs/carousel3.jpeg')
       ],
       lostData: [],
       foundData: [],
-      formVisibleContent:false,
-      content:''
+      formVisibleContent: false,
+      content: '',
+      formVisibleContact: false,
+      contactForm: ''
     }
   },
   mounted() {
@@ -127,15 +142,35 @@ export default {
       this.content = content
       this.formVisibleContent = true
     },
+    handleAddContact(contactedId) {
+      //打开新增窗口前，清空上次残留数据
+      this.contactForm = {}
+      this.contactForm.contactedId = contactedId
+      this.formVisibleContact = true
+    },
+
+    saveContact() {
+      this.$request.post('/lost-contact/save', this.contactForm).then(res => {
+        if (res.code === '200') {
+          this.$message.success('保存成功')
+          this.formVisibleContact = false
+          this.getData(1)
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      }).catch(res => {
+        console.log(res.message)
+      })
+    },
 
     getLostData() {
-      this.$request.get('/lostInfo/selectNew4').then(res=>{
-        if (res.code==='200'){
+      this.$request.get('/lostInfo/selectNew4').then(res => {
+        if (res.code === '200') {
           this.lostData = res.data;
-        }else{
+        } else {
           this.$message.error(res.msg)
         }
-      }).catch(res=>res)
+      }).catch(res => res)
     }
   }
 }
@@ -143,7 +178,7 @@ export default {
 
 <style scoped>
 /*设置弹窗位置*/
-::v-deep .el-dialog__header{
+::v-deep .el-dialog__header {
   margin-top: 300px !important;
 }
 </style>

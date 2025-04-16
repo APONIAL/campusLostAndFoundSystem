@@ -21,7 +21,7 @@
           </div>
           <div style="margin-top: 20px">
             <el-button type="info" @click="showContent(item.content)">查看详情</el-button>
-            <el-button type="success">联系失主</el-button>
+            <el-button type="success" @click="handleAddContact(item.userId)">联系失主</el-button>
           </div>
         </div>
       </el-col>
@@ -49,23 +49,32 @@
       </div>
     </el-dialog>
     <!--弹窗显示联系失主-->
-    <el-dialog title="内容" :visible.sync="formVisibleContent" width="60%">
-
+    <el-dialog title="联系失主" :visible.sync="formVisibleContact"
+               width="40%">
+      <el-form :model="contactForm" label-width="80px" style="padding-right: 20px" ref="formRef">
+        <el-form-item label="联系方式" prop="contactMethod">
+          <el-input v-model="contactForm.contactMethod"></el-input>
+        </el-form-item>
+        <el-form-item label="内容" prop="content">
+          <el-input type="textarea" v-model="contactForm.content"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="formVisibleContact = false">取 消</el-button>
+        <el-button type="primary" @click="saveContact">确 定</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import E from "wangeditor";
-import hljs from "highlight.js";
 
 export default {
   name: "LostSquare",
   data() {
     return {
       tableData: [],
-      form: [],
-      formVisible: false,
+      contactForm: [],
       //当前页码
       pageNum: 1,
       //每页显示条数
@@ -73,21 +82,35 @@ export default {
       total: 0,
       loginUser: JSON.parse(localStorage.getItem('user') || '{}'),
       title: '',
-      formVisibleContent: '',
-      content: ''
+      formVisibleContent: false,
+      content: '',
+      formVisibleContact: false
     }
   },
   mounted() {
     this.getData();
   },
   methods: {
-
-    //用弹窗显示内容
-    showContent(content) {
-      this.content = content
-      this.formVisibleContent = true
+    handleAddContact(contactedId) {
+      //打开新增窗口前，清空上次残留数据
+      this.contactForm = {}
+      this.contactForm.contactedId = contactedId
+      this.formVisibleContact = true
     },
 
+    saveContact() {
+      this.$request.post('/lost-contact/save', this.contactForm).then(res => {
+        if (res.code === '200') {
+          this.$message.success('保存成功')
+          this.getData(1)
+          this.formVisibleContact = false
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      }).catch(res => {
+        console.log(res.message)
+      })
+    },
 
 
     //删除单条数据
@@ -116,31 +139,6 @@ export default {
     },
 
 
-    handleEdit(row) {
-      this.formVisible = true
-      //给form对象赋值，要深度拷贝
-      this.form = JSON.parse(JSON.stringify(row))
-    },
-    handleAddLost() {
-      //打开新增窗口前，清空上次残留数据
-      this.form = {}
-      this.formVisible = true
-    },
-    sendSaveOrUpdateRequest() {
-      //获取编辑框的内容并发送
-      this.$request.post('/lostInfo/saveOrUpdate', this.form).then(res => {
-        if (res.code === '200') {
-          this.$message.success('保存成功')
-          this.getData(1)
-          this.formVisible = false
-        } else {
-          this.$message.error(res.data.msg)
-        }
-      }).catch(res => {
-        console.log(res.message)
-      })
-    },
-
     //从后端获取数据
     getData(pageNum) {
       // 解决在第二页点击查询后，数据在第一页，而显示的是第二页
@@ -165,7 +163,12 @@ export default {
     },
     handleCurrentChange(val) {
       this.getData(val)
-    }
+    },
+    //用弹窗显示内容
+    showContent(content) {
+      this.content = content
+      this.formVisibleContent = true
+    },
   }
 }
 </script>

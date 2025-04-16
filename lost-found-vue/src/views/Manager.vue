@@ -10,7 +10,7 @@
         </div>
         <!--侧边栏菜单-->
         <!--default-active 选中后的菜单项变为激活状态-->
-        <el-menu :default-openeds="['info']" :collapse="isCollapse" :collapse-transition="false" router background-color="#001529"
+        <el-menu :default-openeds="['info','sys']" :collapse="isCollapse" :collapse-transition="false" router background-color="#001529"
                  text-color="rgba(255,255,255,0.65)" active-text-color="#fff"
                  style="border: none" :default-active="$route.path">
           <!--一级菜单-->
@@ -21,6 +21,13 @@
           </el-menu-item>
           <!--二级菜单-->
           <el-submenu index="info">
+            <template slot="title" >
+              <i class="el-icon-menu"></i><span>信息管理</span>
+            </template>
+            <el-menu-item index="/lostContact">留言管理</el-menu-item>
+          </el-submenu>
+          <!--二级菜单，系统管理-->
+          <el-submenu index="sys">
             <template slot="title" >
               <i class="el-icon-menu"></i><span>系统管理</span>
             </template>
