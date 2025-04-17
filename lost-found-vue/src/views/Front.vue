@@ -12,7 +12,7 @@
           <el-menu :default-active="$route.path" mode="horizontal" router>
             <el-menu-item index="/front/home" style="width: 96px !important;">首页</el-menu-item>
             <el-menu-item index="/front/lostSquare">失物广场</el-menu-item>
-            <el-menu-item index="/front/serve">招领广场</el-menu-item>
+            <el-menu-item index="/front/foundSquare">招领广场</el-menu-item>
             <el-menu-item index="/front/person">个人中心</el-menu-item>
           </el-menu>
         </div>
@@ -35,7 +35,7 @@
                 <div @click="$router.push('/front/myLost')">我的失物</div>
               </el-dropdown-item>
               <el-dropdown-item>
-                <div @click="$router.push('/front/reserve')">我预约的服务</div>
+                <div @click="$router.push('/front/myFound')">我的招领</div>
               </el-dropdown-item>
               <el-dropdown-item>
                 <div @click="logout">退出登录</div>

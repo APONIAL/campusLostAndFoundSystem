@@ -41,6 +41,9 @@
               </div>
             </div>
           </el-col>
+
+
+          <!--右侧招领-->
           <el-col :span="12">
             <div class="card">
               <div style="display: flex">
@@ -48,41 +51,26 @@
                 <div style="flex: 1;text-align: right;color: #666666">查看更多</div>
               </div>
               <div style="margin-top: 40px">
-                <el-row :gutter="20" style="display: flex">
-                  <el-col :span="12">
-                    <div class="transition card" style="margin-left: 3px">
+                <el-row :gutter="20">
+                  <el-col :span="12" v-for="item in foundData" style="margin-bottom: 20px" :key="item.id">
+                    <div class="transition card" st0yle="margin-left: 3px">
                       <div style="display: flex">
-                        <img src="@/assets/imgs/logo.png" alt=""
+                        <img :src="item.img" alt=""
                              style="height: 90px;width: 90px;border: 1px solid #eeeeee;border-radius: 10px">
                         <div style="margin-left: 10px">
-                          <div style="font-weight: 550;color:#ef5d26;margin-top: 5px">南瓜头</div>
-                          <div style="margin-top: 10px;color: #666666">发布人：张三</div>
-                          <div style="margin-top: 10px;color: #666666">时间：2025-4-10</div>
+                          <div style="font-weight: 550;color:#ef5d26;margin-top: 5px">{{ item.name }}</div>
+                          <div style="margin-top: 10px;color: #666666">发布人：{{ item.founderName }}</div>
+                          <div style="margin-top: 10px;color: #666666">时间：{{ item.foundTime }}</div>
                         </div>
                       </div>
                       <div style="margin-top: 20px">
-                        <el-button type="info">查看详情</el-button>
-                        <el-button type="success">联系失主</el-button>
+                        <el-button type="info" @click="showContent(item.content)">查看详情</el-button>
+                        <el-button type="success" @click="handleAddContact(item.userId)">联系失主</el-button>
                       </div>
                     </div>
                   </el-col>
-                  <el-col :span="12">
-                    <div class="transition card" style="margin-left: 3px">
-                      <div style="display: flex">
-                        <img src="@/assets/imgs/logo.png" alt=""
-                             style="height: 90px;width: 90px;border: 1px solid #eeeeee;border-radius: 10px">
-                        <div style="margin-left: 10px">
-                          <div style="font-weight: 550;color:#ef5d26;margin-top: 5px">南瓜头</div>
-                          <div style="margin-top: 10px;color: #666666">发布人：张三</div>
-                          <div style="margin-top: 10px;color: #666666">时间：2025-4-10</div>
-                        </div>
-                      </div>
-                      <div style="margin-top: 20px">
-                        <el-button type="info">查看详情</el-button>
-                        <el-button type="success">联系失主</el-button>
-                      </div>
-                    </div>
-                  </el-col>
+
+
                 </el-row>
               </div>
             </div>
@@ -134,7 +122,8 @@ export default {
     }
   },
   mounted() {
-    this.getLostData();
+    this.getLostData()
+    this.getFoundData()
   },
   methods: {
     //用弹窗显示内容
@@ -167,6 +156,15 @@ export default {
       this.$request.get('/lostInfo/selectNew4').then(res => {
         if (res.code === '200') {
           this.lostData = res.data;
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch(res => res)
+    },
+    getFoundData() {
+      this.$request.get('/found-info/selectNew4').then(res => {
+        if (res.code === '200') {
+          this.foundData = res.data;
         } else {
           this.$message.error(res.msg)
         }

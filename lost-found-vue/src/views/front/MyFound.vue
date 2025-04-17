@@ -2,7 +2,7 @@
   <div class="main-content">
     <div>
       <div style="margin:10px 0">
-        <el-button type="primary" plain @click="handleAddLost">发布失物</el-button>
+        <el-button type="primary" plain @click="handleAddFound">发布招领</el-button>
       </div>
       <el-table :data="tableData" stripe
                 :header-cell-style="{backgroundColor:'aliceblue',color:'#666'}"
@@ -21,11 +21,13 @@
         </el-table-column>
         <el-table-column prop="status" label="状态">
           <template v-slot="scope">
-            <el-tag v-if="scope.row.status === false" type="danger">丢失中</el-tag>
-            <el-tag v-else type="success">已找到</el-tag>
+            <el-tag v-if="scope.row.status === false" type="danger">未找到失主</el-tag>
+            <el-tag v-else type="success">已找到失主</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="time" label="时间"></el-table-column>
+        <el-table-column prop="category" label="类别"></el-table-column>
+        <el-table-column prop="foundLocation" label="发现地点"></el-table-column>
+        <el-table-column prop="foundTime" label="发现时间"></el-table-column>
 
         <el-table-column label="操作" width="180" min-width="120%" align="center">
           <template v-slot="scope">
@@ -47,7 +49,7 @@
         </el-pagination>
       </div>
       <!--弹窗嵌套表单-->
-      <el-dialog title="失物信息" :visible.sync="formVisible"
+      <el-dialog title="物品信息" :visible.sync="formVisible"
                  width="40%" :close-on-click-modal="false" @close="closeDialog">
         <el-form :model="form" label-width="80px" style="padding-right: 20px" :rules="rules" ref="formRef">
           <el-form-item label="物品图片" prop="img">
@@ -65,9 +67,27 @@
           </el-form-item>
           <el-form-item label="物品状态" prop="status">
             <el-select v-model="form.status" placeholder="请选择状态">
-              <el-option label="丢失中" :value="false"></el-option>
-              <el-option label="已找到" :value="true"></el-option>
+              <el-option label="未找到失主" :value="false"></el-option>
+              <el-option label="已找到失主" :value="true"></el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item label="物品类别" prop="category" >
+              <el-select  placeholder="请选择类别" v-model="form.category">
+                <el-option v-for="(item,index) in categoryList " :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+          </el-form-item>
+          <el-form-item label="发现地点" prop="foundLocation">
+            <el-input v-model="form.foundLocation"></el-input>
+          </el-form-item>
+          <el-form-item label="发现时间" prop="foundTime">
+            <el-date-picker
+              v-model="form.foundTime"
+              align="right"
+              placeholder="选择日期"
+              type="date"
+              value-format="yyyy-MM-dd"
+              :picker-options="pickerOptions">
+            </el-date-picker>
           </el-form-item>
           <el-form-item label="物品描述" prop="content">
             <div id="editor"></div>
@@ -93,7 +113,7 @@ import E from "wangeditor";
 import hljs from "highlight.js";
 
 export default {
-  name: "MyLost",
+  name: "MyFound",
   data() {
     return {
       tableData: [],
@@ -108,8 +128,35 @@ export default {
       //上传成功后提供图片预览列表
       fileList: [],
       editor: null,
-      formVisibleContent:false,
-      content:''
+      formVisibleContent: false,
+      content: '',
+      categoryList: [{label:'学习用品',value:'学习用品'},{label:'电子设备',value:'电子设备'},{label:'个人用品',value:'个人用品'},{label:'生活用品',value:'生活用品'},{label:'贵重物品',value:'贵重物品'},{value:'其他'}],
+      foundTime: '',
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        },
+        shortcuts: [{
+          text: '今天',
+          onClick(picker) {
+            picker.$emit('pick', new Date());
+          }
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            const date = new Date();
+            date.setTime(date.getTime() - 3600 * 1000 * 24);
+            picker.$emit('pick', date);
+          }
+        }, {
+          text: '一周前',
+          onClick(picker) {
+            const date = new Date();
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', date);
+          }
+        }]
+      },
     }
   },
   mounted() {
@@ -155,7 +202,6 @@ export default {
 
     //上传成功后的回调函数
     handleUploadSuccess(res, file) {
-      console.log(res);
       this.$set(this.form, 'img', res.data)
     },
 
@@ -167,7 +213,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$request.delete('/lostInfo/' + id).then(res => {
+        this.$request.delete('/found-info/' + id).then(res => {
           if (res.code === '200') {
             this.$message({
               type: 'success',
@@ -197,7 +243,7 @@ export default {
         this.editor.txt.html(this.form.content)
       })
     },
-    handleAddLost() {
+    handleAddFound() {
       //打开新增窗口前，清空上次残留数据
       this.form = {}
       this.formVisible = true
@@ -207,7 +253,7 @@ export default {
     sendSaveOrUpdateRequest() {
       //获取编辑框的内容并发送
       this.form.content = this.editor.txt.html()
-      this.$request.post('/lostInfo/saveOrUpdate', this.form).then(res => {
+      this.$request.post('/found-info/saveOrUpdate', this.form).then(res => {
         if (res.code === '200') {
           this.$message.success('保存成功')
           this.getData(1)
@@ -224,7 +270,7 @@ export default {
     getData(pageNum) {
       // 解决在第二页点击查询后，数据在第一页，而显示的是第二页
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/lostInfo/myLostListPage', {
+      this.$request.get('/found-info/myFoundListPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
