@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -47,10 +48,21 @@ public class LostContact implements Serializable {
     @ApiModelProperty("留言时间")
     private String createTime;
 
+    @ApiModelProperty("失物信息表中id")
+    private Integer lostId;
+
+    @ApiModelProperty("招领信息表中id")
+    private Integer foundId;
+
     @TableField(exist = false)
     private String publisherName;
 
     @TableField(exist = false)
     private String contactedName;
+
+
+
+
+
 
 }

@@ -2,7 +2,14 @@
   <div class="main-content">
     <div style="color: #8b4515;font-size: 16px;font-weight: 550;">这里是招领广场</div>
     <div style="margin-top: 30px">
-      <el-input placeholder="请输入标题查询" style="width: 200px" v-model="title"></el-input>
+      <el-input style="width: 200px" placeholder="查询发布人" clearable v-model="founderName"></el-input>
+      <el-input style="width: 200px;margin-left: 10px" placeholder="查询名称" clearable
+                v-model="foundName"></el-input>
+      <el-select  placeholder="请选择类别" v-model="category" style="margin-left: 10px">
+        <el-option v-for="(item,index) in categoryList " :key="index" :label="item.label" :value="item.value"></el-option>
+      </el-select>
+      <el-input style="width: 200px;margin-left: 10px" placeholder="查询地点" clearable
+                v-model="foundLocation"></el-input>
       <el-button type="primary" @click="getData(1)" style="margin: 0 10px">查询</el-button>
       <el-button type="info" @click="reset">重置</el-button>
     </div>
@@ -85,7 +92,12 @@ export default {
       title: '',
       formVisibleContent: false,
       content: '',
-      formVisibleContact: false
+      formVisibleContact: false,
+      founderName: '',
+      foundName:'',
+      category:'',
+      categoryList: [{label:'学习用品',value:'学习用品'},{label:'电子设备',value:'电子设备'},{label:'个人用品',value:'个人用品'},{label:'生活用品',value:'生活用品'},{label:'贵重物品',value:'贵重物品'},{value:'其他'}],
+      foundLocation:''
     }
   },
   mounted() {
@@ -139,6 +151,12 @@ export default {
       this.getData(1)
     },
 
+    reset() {
+      this.founderName = ''
+      this.foundName = ''
+      this.category =''
+      this.foundLocation =''
+    },
 
     //从后端获取数据
     getData(pageNum) {
@@ -148,6 +166,10 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
+          founderName: this.founderName,
+          name: this.foundName,
+          category:this.category,
+          foundLocation:this.foundLocation
         }
       }).then(res => {
         if (res.code === '200') {

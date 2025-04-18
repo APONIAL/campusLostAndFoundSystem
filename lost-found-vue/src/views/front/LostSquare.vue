@@ -21,7 +21,7 @@
           </div>
           <div style="margin-top: 20px">
             <el-button type="info" @click="showContent(item.content)">查看详情</el-button>
-            <el-button type="success" @click="handleAddContact(item.userId)">联系失主</el-button>
+            <el-button type="success" @click="handleAddContact(item.userId,item.id)">联系失主</el-button>
           </div>
         </div>
       </el-col>
@@ -91,10 +91,13 @@ export default {
     this.getData();
   },
   methods: {
-    handleAddContact(contactedId) {
+    handleAddContact(contactedId,itemId) {
       //打开新增窗口前，清空上次残留数据
       this.contactForm = {}
       this.contactForm.contactedId = contactedId
+      this.contactForm.itemId = itemId
+      //区分当前contact是失物还是招领 1：失物，0：招领
+      this.contactForm.itemType = 1
       this.formVisibleContact = true
     },
 

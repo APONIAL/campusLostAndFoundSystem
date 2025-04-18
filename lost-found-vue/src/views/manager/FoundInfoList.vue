@@ -2,9 +2,14 @@
   <div>
     <!--查询框-->
     <div>
-      <el-input style="width: 200px" placeholder="查询发布人" clearable v-model="publisherName"></el-input>
+      <el-input style="width: 200px" placeholder="查询发布人" clearable v-model="founderName"></el-input>
       <el-input style="width: 200px;margin-left: 10px" placeholder="查询名称" clearable
-                v-model="lostName"></el-input>
+                v-model="foundName"></el-input>
+      <el-select  placeholder="请选择类别" v-model="category" style="margin-left: 10px">
+        <el-option v-for="(item,index) in categoryList " :key="index" :label="item.label" :value="item.value"></el-option>
+      </el-select>
+      <el-input style="width: 200px;margin-left: 10px" placeholder="查询地点" clearable
+                v-model="foundLocation"></el-input>
       <el-button type="primary" style="margin-left: 10px" @click="getData(1)">查询</el-button>
       <el-button type="info" @click="reset">重置</el-button>
     </div>
@@ -18,13 +23,13 @@
     >
       <el-table-column type="selection" width="55" align="center"></el-table-column>
       <el-table-column prop="id" label="序号" min-width="30"></el-table-column>
-      <el-table-column prop="name" label="失物名称"></el-table-column>
-      <el-table-column prop="img" label="失物图片">
+      <el-table-column prop="name" label="物品名称"></el-table-column>
+      <el-table-column prop="img" label="物品图片">
         <template v-slot="scope">
           <img :src="scope.row.img" alt="" style="width: 60px;height: 60px; border-radius: 10px">
         </template>
       </el-table-column>
-      <el-table-column prop="user" label="发布人"></el-table-column>
+      <el-table-column prop="founderName" label="发布人"></el-table-column>
       <el-table-column prop="content" label="失物描述">
         <template v-slot="scope">
           <el-button type="text" @click="showContent(scope.row.content)">点击查看</el-button>
@@ -32,14 +37,16 @@
       </el-table-column>
       <el-table-column prop="status" label="状态">
         <template v-slot="scope">
-          <el-tag v-if="scope.row.status === true" type="success">已找到</el-tag>
-          <el-tag v-if="scope.row.status === false" type="danger">丢失中</el-tag>
+          <el-tag v-if="scope.row.status === true" type="success">已找到失主</el-tag>
+          <el-tag v-if="scope.row.status === false" type="danger">未找到失主</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="time" label="发布时间"></el-table-column>
+      <el-table-column prop="category" label="类别"></el-table-column>
+      <el-table-column prop="foundLocation" label="发现地点"></el-table-column>
+      <el-table-column prop="foundTime" label="发现时间"></el-table-column>
       <el-table-column label="操作" width="180" min-width="120%" align="center">
         <template v-slot="scope">
-          <el-button size="mini" type="primary" plain @click="handleEdit(scope.row.id)">编辑</el-button>
+          <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" plain @click="delOne(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -57,7 +64,7 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="失物信息" :visible.sync="formVisible"
+    <el-dialog title="编辑招领信息" :visible.sync="formVisible"
                width="40%" :close-on-click-modal="false" @close="closeDialog">
       <el-form :model="form" label-width="80px" style="padding-right: 20px" :rules="rules" ref="formRef">
         <el-form-item label="物品图片" prop="img">
@@ -73,11 +80,19 @@
         <el-form-item label="物品名称" prop="name">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
+        <el-form-item label="物品类别" prop="category">
+          <el-select  placeholder="请选择类别" v-model="form.category">
+            <el-option v-for="(item,index) in categoryList " :key="index" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="物品状态" prop="status">
           <el-select v-model="form.status" placeholder="请选择状态">
-            <el-option label="丢失中" :value="false"></el-option>
-            <el-option label="已找到" :value="true"></el-option>
+            <el-option label="未找到失主" :value="false"></el-option>
+            <el-option label="已找到失主" :value="true"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="发现地点" prop="foundLocation">
+          <el-input v-model="form.foundLocation"></el-input>
         </el-form-item>
         <el-form-item label="物品描述" prop="content">
           <div id="editor"></div>
@@ -106,7 +121,6 @@ import hljs from "highlight.js";
 
 export default {
   name: 'LostInfoList',
-  title: '',
   data() {
     return {
       //所有数据
@@ -117,8 +131,8 @@ export default {
       //每页显示条数
       pageSize: 6,
       username: '',
-      publisherName: '',
-      lostName:'',
+      founderName: '',
+      foundName:'',
       total: 0,
       loginUser: JSON.parse(localStorage.getItem('user') || '{}'),
       ids: [],
@@ -126,6 +140,9 @@ export default {
       formVisible: false,
       editor: null,
       formVisibleContent: false,
+      category:'',
+      categoryList: [{label:'学习用品',value:'学习用品'},{label:'电子设备',value:'电子设备'},{label:'个人用品',value:'个人用品'},{label:'生活用品',value:'生活用品'},{label:'贵重物品',value:'贵重物品'},{value:'其他'}],
+      foundLocation:''
     }
   },
   mounted() {
@@ -218,7 +235,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$request.delete('lostInfo/' + id).then(res => {
+        this.$request.delete('found-info/' + id).then(res => {
           if (res.code === '200') {
             this.$message({
               type: 'success',
@@ -237,8 +254,10 @@ export default {
     },
 
     reset() {
-      this.publisherName = ''
-      this.contactedName = ''
+      this.founderName = ''
+      this.foundName = ''
+      this.category =''
+      this.foundLocation =''
     },
     handleEdit(row) {
       this.formVisible = true
@@ -261,7 +280,7 @@ export default {
     sendSaveOrUpdateRequest() {
       //获取编辑框的内容并发送
       this.form.content = this.editor.txt.html()
-      this.$request.post('/lostInfo/saveOrUpdate', this.form).then(res => {
+      this.$request.post('/found-info/saveOrUpdate', this.form).then(res => {
         if (res.code === '200') {
           this.$message.success('保存成功')
           this.getData(1)
@@ -278,12 +297,14 @@ export default {
     getData(pageNum) {
       // 解决在第二页点击查询后，数据在第一页，而显示的是第二页
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('lostInfo/lostSquarePage', {
+      this.$request.get('/found-info/FoundSquarePage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          user: this.publisherName,
-          name: this.lostName,
+          founderName: this.founderName,
+          name: this.foundName,
+          category:this.category,
+          foundLocation:this.foundLocation
         }
       }).then(res => {
         if (res.code === '200') {

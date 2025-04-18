@@ -2,11 +2,13 @@ package com.example.lostandfoundbackend.controller;
 
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.lostandfoundbackend.common.AuthAccess;
 import com.example.lostandfoundbackend.common.Result;
 import com.example.lostandfoundbackend.entity.LostInfo;
+import com.example.lostandfoundbackend.entity.User;
 import com.example.lostandfoundbackend.service.ILostInfoService;
 import com.example.lostandfoundbackend.service.IUserService;
 import com.example.lostandfoundbackend.utils.TokenUtils;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -99,10 +102,25 @@ public class LostInfoController {
     @AuthAccess
     @GetMapping("/lostSquarePage")
     public Result lostSquarePage(@RequestParam Integer pageNum,
-                                 @RequestParam Integer pageSize) {
+                                 @RequestParam Integer pageSize,
+                                 @RequestParam(defaultValue = "") String name,
+                                 @RequestParam(defaultValue = "") String user) {
         QueryWrapper<LostInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(StrUtil.isNotBlank(name),"name",name);
+        if (StrUtil.isNotBlank(user)){
+            List<Integer> userIds = userService.list(new QueryWrapper<User>().like("name", user)).stream()
+                    .map(User::getId).collect(Collectors.toList());
+            if (userIds.isEmpty()) {
+                return Result.success(new Page<>(pageNum, pageSize));
+            }
+            queryWrapper.in("user_id", userIds);
+        }
         queryWrapper.orderByDesc("id");
+        queryWrapper.like(StrUtil.isNotBlank(name),"name",name);
         Page<LostInfo> page = lostInfoService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        if (page.getRecords().isEmpty()){
+            return Result.success(new Page<>(pageNum, pageSize));
+        }
         page.getRecords().forEach(lostInfo -> {
             lostInfo.setUser(userService.getById(lostInfo.getUserId()) == null ?
                     "用户已注销" : userService.getById(lostInfo.getUserId()).getName());

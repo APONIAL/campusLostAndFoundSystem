@@ -26,6 +26,7 @@
             </template>
             <el-menu-item index="/lostContact">留言管理</el-menu-item>
             <el-menu-item index="/lostInfoList">失物管理</el-menu-item>
+            <el-menu-item index="/foundInfoList">招领管理</el-menu-item>
           </el-submenu>
           <!--二级菜单，系统管理-->
           <el-submenu index="sys">

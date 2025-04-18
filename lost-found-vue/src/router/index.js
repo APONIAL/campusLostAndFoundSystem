@@ -24,9 +24,11 @@ const routes = [
       {path: 'orders', name: 'Orders', meta: {title: '订单管理'}, component: () => import('../views/manager/Orders')},
       {path: 'lostContact', name: 'LostContact', meta: {title: '留言管理'}, component: () => import('../views/manager/LostContact')},
       {path: 'lostInfoList', name: 'LostInfoList', meta: {title: '失物管理'}, component: () => import('../views/manager/LostInfoList')},
+      {path: 'foundInfoList', name: 'FoundInfoList', meta: {title: '招领管理'}, component: () => import('../views/manager/FoundInfoList')},
     ]
   },
   {
+
     path: '/front',
     name: 'Front',
     redirect: '/front/home',
@@ -82,7 +84,6 @@ router.beforeEach((to, from, next) => {
   //to是要进入的目标路由对象，from是当前导航正要离开的路由，next是一个函数，表示放行
   let adminPaths = ['/user']
   //如果当前登录的用户不是管理，并且要to的路径是管理员路径，则跳转到无权限页面
-  console.log(to)
   let user = JSON.parse(localStorage.getItem('user') || '{}')
   if (user.role !== 'ADMIN' && adminPaths.includes(to.path)) {
     next('/403')
