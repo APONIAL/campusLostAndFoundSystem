@@ -60,9 +60,10 @@ public class LostContact implements Serializable {
     @TableField(exist = false)
     private String contactedName;
 
+    @TableField(exist = false)
+    private String itemName;
 
-
-
-
+    @TableField(exist = false)
+    private String img;
 
 }

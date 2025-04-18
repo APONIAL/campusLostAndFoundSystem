@@ -123,7 +123,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$request.delete('/notice/' + id).then(res => {
+        this.$request.delete('/lostInfo/' + id).then(res => {
           if (res.code === '200') {
             this.$message({
               type: 'success',

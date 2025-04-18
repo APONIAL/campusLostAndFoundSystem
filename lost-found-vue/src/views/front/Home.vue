@@ -31,7 +31,8 @@
                       </div>
                       <div style="margin-top: 20px">
                         <el-button type="info" @click="showContent(item.content)">查看详情</el-button>
-                        <el-button type="success" @click="handleAddContact(item.userId)">联系失主</el-button>
+                        <el-button type="success" @click="handleAddContactLost(item.userId,item.id)">联系失主
+                        </el-button>
                       </div>
                     </div>
                   </el-col>
@@ -53,7 +54,7 @@
               <div style="margin-top: 40px">
                 <el-row :gutter="20">
                   <el-col :span="12" v-for="item in foundData" style="margin-bottom: 20px" :key="item.id">
-                    <div class="transition card" st0yle="margin-left: 3px">
+                    <div class="transition card" style="margin-left: 3px">
                       <div style="display: flex">
                         <img :src="item.img" alt=""
                              style="height: 90px;width: 90px;border: 1px solid #eeeeee;border-radius: 10px">
@@ -65,12 +66,10 @@
                       </div>
                       <div style="margin-top: 20px">
                         <el-button type="info" @click="showContent(item.content)">查看详情</el-button>
-                        <el-button type="success" @click="handleAddContact(item.userId)">联系失主</el-button>
+                        <el-button type="success" @click="handleAddContactFound(item.userId,item.id)">联系拾主</el-button>
                       </div>
                     </div>
                   </el-col>
-
-
                 </el-row>
               </div>
             </div>
@@ -109,7 +108,7 @@ export default {
   name: "Home",
   data() {
     return {
-      carouselData:[
+      carouselData: [
         require('@/assets/imgs/carousel2.png'),
         require('@/assets/imgs/carousel3.jpeg')
       ],
@@ -131,10 +130,22 @@ export default {
       this.content = content
       this.formVisibleContent = true
     },
-    handleAddContact(contactedId) {
+    handleAddContactLost(contactedId, itemId) {
       //打开新增窗口前，清空上次残留数据
       this.contactForm = {}
       this.contactForm.contactedId = contactedId
+      this.contactForm.itemId = itemId
+      //区分当前contact是失物还是招领 1：失物，0：招领
+      this.contactForm.itemType = 1
+      this.formVisibleContact = true
+    },
+    handleAddContactFound(contactedId, itemId) {
+      //打开新增窗口前，清空上次残留数据
+      this.contactForm = {}
+      this.contactForm.contactedId = contactedId
+      this.contactForm.itemId = itemId
+      //区分当前contact是失物还是招领 1：失物，0：招领
+      this.contactForm.itemType = 0
       this.formVisibleContact = true
     },
 

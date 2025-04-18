@@ -38,6 +38,9 @@
                 <div @click="$router.push('/front/myFound')">我的招领</div>
               </el-dropdown-item>
               <el-dropdown-item>
+                <div @click="$router.push('/front/contactMe')">联系我的</div>
+              </el-dropdown-item>
+              <el-dropdown-item>
                 <div @click="logout">退出登录</div>
               </el-dropdown-item>
             </el-dropdown-menu>

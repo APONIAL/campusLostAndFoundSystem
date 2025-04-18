@@ -40,6 +40,7 @@ const routes = [
       {path: 'myFound', name: 'MyFound', meta: {title: '我的招领'}, component: () => import('../views/front/MyFound')},
       {path: 'lostSquare', name: 'LostSquare', meta: {title: '失物广场'}, component: () => import('../views/front/LostSquare')},
       {path: 'foundSquare', name: 'FoundSquare', meta: {title: '招领广场'}, component: () => import('../views/front/FoundSquare')},
+      {path: 'contactMe', name: 'ContactMe', meta: {title: '联系我的'}, component: () => import('../views/front/ContactMe')},
     ]
   },
 

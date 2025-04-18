@@ -29,7 +29,7 @@
           </div>
           <div style="margin-top: 20px">
             <el-button type="info" @click="showContent(item.content)">查看详情</el-button>
-            <el-button type="success" @click="handleAddContact(item.userId)">联系他</el-button>
+            <el-button type="success" @click="handleAddContact(item.userId,item.id)">联系拾主</el-button>
           </div>
         </div>
       </el-col>
@@ -104,10 +104,13 @@ export default {
     this.getData();
   },
   methods: {
-    handleAddContact(contactedId) {
+    handleAddContact(contactedId,itemId) {
       //打开新增窗口前，清空上次残留数据
       this.contactForm = {}
       this.contactForm.contactedId = contactedId
+      this.contactForm.itemId = itemId
+      //区分当前contact是失物还是招领 1：失物，0：招领
+      this.contactForm.itemType = 0
       this.formVisibleContact = true
     },
 
@@ -133,7 +136,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$request.delete('/notice/' + id).then(res => {
+        this.$request.delete('/found-info/' + id).then(res => {
           if (res.code === '200') {
             this.$message({
               type: 'success',
