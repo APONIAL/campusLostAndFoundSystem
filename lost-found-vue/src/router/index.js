@@ -41,6 +41,7 @@ const routes = [
       {path: 'lostSquare', name: 'LostSquare', meta: {title: '失物广场'}, component: () => import('../views/front/LostSquare')},
       {path: 'foundSquare', name: 'FoundSquare', meta: {title: '招领广场'}, component: () => import('../views/front/FoundSquare')},
       {path: 'contactMe', name: 'ContactMe', meta: {title: '联系我的'}, component: () => import('../views/front/ContactMe')},
+      {path: 'myContact', name: 'MyContact', meta: {title: '我联系的'}, component: () => import('../views/front/MyContact')},
     ]
   },
 

@@ -246,5 +246,85 @@ public class LostContactController {
         return Result.success(contactPage);
     }
 
+    /**
+     * 前端，我联系的接口
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("myContact")
+    public Result myContact(@RequestParam Integer pageNum,
+                            @RequestParam Integer pageSize) {
+        // 获取当前用户 ID
+        Integer currentUserId = Objects.requireNonNull(TokenUtils.getCurrentUser()).getId();
+        Page<LostContact> contactPage = lostContactService.lambdaQuery()
+                .eq(LostContact::getPublisherId, currentUserId)
+                .page(new Page<>(pageNum, pageSize));
+
+        List<LostContact> contactList = new ArrayList<>(contactPage.getRecords());
+        // 查询与当前用户相关的联系信息
+
+        if (contactList.isEmpty()) {
+            return Result.success(new Page<>(pageNum,pageSize));
+        }
+
+        // 提取所有的 lostId 和 foundId
+        Set<Integer> lostIds = contactList.stream()
+                .map(LostContact::getLostId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        Set<Integer> foundIds = contactList.stream()
+                .map(LostContact::getFoundId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<Integer, LostInfo> lostInfoMap = null;
+        Map<Integer, FoundInfo> foundInfoMap =null;
+        //非空判断，否则查询错误
+        if (!lostIds.isEmpty()) {
+            // 批量查询 lostInfo 和 foundInfo
+            lostInfoMap = lostInfoService.listByIds(lostIds).stream()
+                    .collect(Collectors.toMap(LostInfo::getId, Function.identity()));
+        }
+        if (!foundIds.isEmpty()) {
+            foundInfoMap = foundInfoService.listByIds(foundIds).stream()
+                    .collect(Collectors.toMap(FoundInfo::getId, Function.identity()));
+        }
+        // 批量查询用户信息
+        Set<Integer> contactedIds = contactList.stream()
+                .map(LostContact::getContactedId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        Map<Integer, User> userMap = userService.listByIds(contactedIds).stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+
+        // 填充数据
+        Map<Integer, LostInfo> finalLostInfoMap = lostInfoMap;
+        Map<Integer, FoundInfo> finalFoundInfoMap = foundInfoMap;
+        contactPage.getRecords().forEach(lostContact -> {
+            // 设置被联系者名称
+            User contacted = userMap.get(lostContact.getContactedId());
+            if (contacted != null) {
+                lostContact.setContactedName(contacted.getName());
+            }
+            // 设置物品名称和图片（lost 或 found）
+            if (lostContact.getLostId() != null && finalLostInfoMap != null) {
+                LostInfo lostInfo = finalLostInfoMap.get(lostContact.getLostId());
+                if (lostInfo != null) {
+                    lostContact.setItemName(lostInfo.getName());
+                    lostContact.setImg(lostInfo.getImg());
+                }
+            } else if (lostContact.getFoundId() != null && finalFoundInfoMap != null) {
+                FoundInfo foundInfo = finalFoundInfoMap.get(lostContact.getFoundId());
+                if (foundInfo != null) {
+                    lostContact.setItemName(foundInfo.getName());
+                    lostContact.setImg(foundInfo.getImg());
+                }
+            }
+        });
+        return Result.success(contactPage);
+    }
+
 }
 

@@ -41,6 +41,9 @@
                 <div @click="$router.push('/front/contactMe')">联系我的</div>
               </el-dropdown-item>
               <el-dropdown-item>
+                <div @click="$router.push('/front/myContact')">我联系的</div>
+              </el-dropdown-item>
+              <el-dropdown-item>
                 <div @click="logout">退出登录</div>
               </el-dropdown-item>
             </el-dropdown-menu>
