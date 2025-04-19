@@ -27,6 +27,8 @@
             <el-menu-item index="/lostContact">留言管理</el-menu-item>
             <el-menu-item index="/lostInfoList">失物管理</el-menu-item>
             <el-menu-item index="/foundInfoList">招领管理</el-menu-item>
+            <el-menu-item index="/dataCharts">数据分析</el-menu-item>
+
           </el-submenu>
           <!--二级菜单，系统管理-->
           <el-submenu index="sys">
@@ -37,6 +39,7 @@
             <el-menu-item index="/news">新闻信息</el-menu-item>
             <el-menu-item index="/notice">系统公告</el-menu-item>
             <el-menu-item index="/logs">系统日志</el-menu-item>
+            <el-menu-item index="/feedbackInfoList">建议反馈</el-menu-item>
             <el-menu-item index="/charts">数据统计</el-menu-item>
             <el-menu-item index="/orders">订单管理</el-menu-item>
           </el-submenu>

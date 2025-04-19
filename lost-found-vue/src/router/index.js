@@ -25,6 +25,7 @@ const routes = [
       {path: 'lostContact', name: 'LostContact', meta: {title: '留言管理'}, component: () => import('../views/manager/LostContact')},
       {path: 'lostInfoList', name: 'LostInfoList', meta: {title: '失物管理'}, component: () => import('../views/manager/LostInfoList')},
       {path: 'foundInfoList', name: 'FoundInfoList', meta: {title: '招领管理'}, component: () => import('../views/manager/FoundInfoList')},
+      {path: 'dataCharts', name: 'DataCharts', meta: {title: '数据分析'}, component: () => import('../views/manager/DataCharts')},
     ]
   },
   {
@@ -42,6 +43,7 @@ const routes = [
       {path: 'foundSquare', name: 'FoundSquare', meta: {title: '招领广场'}, component: () => import('../views/front/FoundSquare')},
       {path: 'contactMe', name: 'ContactMe', meta: {title: '联系我的'}, component: () => import('../views/front/ContactMe')},
       {path: 'myContact', name: 'MyContact', meta: {title: '我联系的'}, component: () => import('../views/front/MyContact')},
+      {path: 'feedback', name: 'FeedBack', meta: {title: '反馈建议'}, component: () => import('../views/front/Feedback')},
     ]
   },
 

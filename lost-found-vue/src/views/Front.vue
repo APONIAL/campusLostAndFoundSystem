@@ -14,6 +14,7 @@
             <el-menu-item index="/front/lostSquare">失物广场</el-menu-item>
             <el-menu-item index="/front/foundSquare">招领广场</el-menu-item>
             <el-menu-item index="/front/person">个人中心</el-menu-item>
+            <el-menu-item index="/front/feedback">反馈建议</el-menu-item>
           </el-menu>
         </div>
       </div>
