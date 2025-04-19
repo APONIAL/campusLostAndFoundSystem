@@ -20,12 +20,12 @@ const routes = [
       {path: 'newsDetail', name: 'NewsDetail', meta: {title: '新闻详情'}, component: () => import('../views/manager/NewsDetail')},
       {path: 'notice', name: 'Notice', meta: {title: '系统公告'}, component: () => import('../views/manager/Notice')},
       {path: 'logs', name: 'logs', meta: {title: '系统日志'}, component: () => import('../views/manager/Logs')},
-      {path: 'charts', name: 'Charts', meta: {title: '数据统计'}, component: () => import('../views/manager/Charts')},
       {path: 'orders', name: 'Orders', meta: {title: '订单管理'}, component: () => import('../views/manager/Orders')},
       {path: 'lostContact', name: 'LostContact', meta: {title: '留言管理'}, component: () => import('../views/manager/LostContact')},
       {path: 'lostInfoList', name: 'LostInfoList', meta: {title: '失物管理'}, component: () => import('../views/manager/LostInfoList')},
       {path: 'foundInfoList', name: 'FoundInfoList', meta: {title: '招领管理'}, component: () => import('../views/manager/FoundInfoList')},
       {path: 'dataCharts', name: 'DataCharts', meta: {title: '数据分析'}, component: () => import('../views/manager/DataCharts')},
+      {path: 'feedbackInfoList', name: 'FeedbackInfoList', meta: {title: '建议反馈'}, component: () => import('../views/manager/FeedbackInfoList')},
     ]
   },
   {

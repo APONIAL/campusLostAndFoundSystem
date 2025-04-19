@@ -40,7 +40,6 @@
             <el-menu-item index="/notice">系统公告</el-menu-item>
             <el-menu-item index="/logs">系统日志</el-menu-item>
             <el-menu-item index="/feedbackInfoList">建议反馈</el-menu-item>
-            <el-menu-item index="/charts">数据统计</el-menu-item>
             <el-menu-item index="/orders">订单管理</el-menu-item>
           </el-submenu>
         </el-menu>

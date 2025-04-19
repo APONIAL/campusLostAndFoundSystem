@@ -70,6 +70,7 @@ public class NoticeController {
     @GetMapping("/selectOpenNotice")
     public Result selectOpenNotice(){
         QueryWrapper<Notice> noticeQueryWrapper = new QueryWrapper<>();
+        noticeQueryWrapper.orderByDesc("id");
         //用户只能看到公开的公告数据
         noticeQueryWrapper.eq("open",1);
         return Result.success(noticeService.list(noticeQueryWrapper));
